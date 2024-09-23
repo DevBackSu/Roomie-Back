@@ -2,6 +2,7 @@ package com.example.roomie.JWT;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.roomie.Repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -34,6 +35,8 @@ public class JwtServiceImpl {
 
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
+
+    private final UserRepository userRepository;
 
     private static final String BEARER = "Bearer";
     private static final String ACCESS_TOKEN_SUB = "AccessToken";
@@ -91,6 +94,69 @@ public class JwtServiceImpl {
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(refreshHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
+                .map(refreshToken -> refreshToken.replace(BEARER, "")); // 토큰에서 Bearer 삭제 부분 -> credentials(자격증명)만 남음
+    }
+
+    /**
+     * 헤더에서 AccessToken 추출
+     * 토큰 형식 : Bearer XXX에서 Bearer를 제외하고 순수 토큰만 가져오기 위해 헤더를 가져온 후 Berer를 삭제
+     */
+    public Optional<String> extractAccessToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(accessHeader))
+                .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
+    }
+
+    /**
+     * AccessToken에서 id값 추출
+     * 추출 전에 JWT.require()로 검증기 생성
+     * verify로 AccessToken 검증
+     * 유효하면 getClaim()으로 id 추출
+     * 유효하지 않으면 빈 Optional 객체 반환
+     */
+    public Optional<String> extractId(String accessToken) {
+        try {
+            return  // 유효성 검사를 위한 알고리즘이 있는 JWT verifier builder 반환
+                    Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
+                    // 반환된 builder로 JWT verifier 생성
+                    .build()
+                    // accessToken을 검증하고 유효하지 않으면 예외를 발생시킴
+                    .verify(accessToken)
+                    // Claim 가져오기 (id값)
+                    .getClaim(ID_CLAIM)
+                    // 가져온 claim을 String으로 변환해 return
+                    .asString());
+        }
+        catch (Exception e){
+            log.error("Access Token이 유효하지 않습니다.");
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * RefreshToken DB 업데이트
+     */
+    public void updateRefreshToken(int id, String refreshToken) {
+        userRepository.findById(id)
+                .ifPresentOrElse(
+                        // findByid를 통해 반환된 Optional 객체에 값이 존재한다면 해당 값을 가지고 수행할 로직을 넘김
+                        // 만약 Optional 객체가 비어 있을 경우, 두 번째 인자의 람다 함수가 실행됨
+                        user -> user.updateRefreshToken(refreshToken),
+                        () -> new Exception("일치하는 사용자가 없습니다.")
+                );
+    }
+
+    /**
+     * 토큰 유효성 검사
+     */
+    public boolean isTokenValid(String token) {
+        try {
+            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+            return true;
+        }
+        catch (Exception e) {
+            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+            return false;
+        }
     }
 }
