@@ -49,12 +49,13 @@ public class JwtServiceImpl {
     }
 
     // AccessToken 생성
-    public String createAccessToken(String user_id) {
+    public String createAccessToken(Long user_id) {
+        String userId = user_id.toString(); // Long 타입으로 받은 id를 String으로 타입 변경
         Date now = new Date();
         return JWT.create() //JWT 토큰을 생성하는 빌더
                 .withSubject(ACCESS_TOKEN_SUB) // JWT의 subject 지정
                 .withExpiresAt(new Date(now.getTime() + accessToken)) // 토큰 만료 시간 설정
-                .withClaim(ID_CLAIM, user_id) // payload에 넣을 claim값
+                .withClaim(ID_CLAIM, userId) // payload에 넣을 claim값
                 .sign(Algorithm.HMAC512(secretKey));  // HMAC512 알고리즘을 사용해 지정한 secret 키로 암호화
     }
 
@@ -136,7 +137,7 @@ public class JwtServiceImpl {
     /**
      * RefreshToken DB 업데이트
      */
-    public void updateRefreshToken(int id, String refreshToken) {
+    public void updateRefreshToken(Long id, String refreshToken) {
         userRepository.findById(id)
                 .ifPresentOrElse(
                         // findByid를 통해 반환된 Optional 객체에 값이 존재한다면 해당 값을 가지고 수행할 로직을 넘김
