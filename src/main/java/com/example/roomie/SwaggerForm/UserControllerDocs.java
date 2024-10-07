@@ -1,5 +1,6 @@
 package com.example.roomie.SwaggerForm;
 
+import com.example.roomie.DTO.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,7 +18,7 @@ public interface UserControllerDocs {
             @ApiResponse(responseCode = "200", description = "반환 성공"),
             @ApiResponse(responseCode = "400", description = "반환 실패")
     })
-    List<String> getUser();
+    UserDto getUser();
 
 
 }
