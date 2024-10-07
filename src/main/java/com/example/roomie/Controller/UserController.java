@@ -1,11 +1,10 @@
 package com.example.roomie.Controller;
 
-import com.example.roomie.DTO.UserDto;
+import com.example.roomie.DTO.RankDTO;
+import com.example.roomie.DTO.UserDTO;
 import com.example.roomie.SwaggerForm.UserControllerDocs;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -15,14 +14,14 @@ import java.util.*;
 public class UserController implements UserControllerDocs {
 
     @GetMapping("/main/user")
-    public UserDto getUser() {
-        UserDto data = new UserDto();
+    public UserDTO getUser() {
+        UserDTO data = new UserDTO();
         return data;
     }
 
     @GetMapping("main/other") // 친구 관계의 사용자 3명 정도를 반환
-    public Map<String, UserDto> getOther() {
-        Map<String, UserDto> other = new HashMap<>();
+    public Map<String, UserDTO> getOther() {
+        Map<String, UserDTO> other = new HashMap<>();
         return other;
     }
 
@@ -36,13 +35,13 @@ public class UserController implements UserControllerDocs {
 
     @GetMapping("main/Crank") // 메인 화면 중 특징 순위 반환
     public Map<String, RankDTO> getCrank() {
-        Map<String, RankDto> crank = new HashMap<>();
+        Map<String, RankDTO> crank = new HashMap<>();
         return crank;
     }
 
     @GetMapping("main/Lrank") // 메인 화면 중 지역 순위 반환
     public Map<String, RankDTO> getLrank() {
-        Map<String, RankDto> Lrank = new HashMap<>();
+        Map<String, RankDTO> Lrank = new HashMap<>();
         return Lrank;
     }
 

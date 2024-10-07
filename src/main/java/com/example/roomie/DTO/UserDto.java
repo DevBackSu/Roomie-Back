@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class UserDto {
+public class UserDTO {
 
     private String socialId;
 

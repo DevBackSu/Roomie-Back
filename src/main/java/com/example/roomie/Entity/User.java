@@ -18,6 +18,8 @@ public class User {
         @Column(name = "user_id")
         private Long id;
 
+        private String email;
+
         private String nickname;
 
         private String gender;
@@ -25,20 +27,22 @@ public class User {
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate birth_date;
 
-        private String school;
-        private String campus; //캠퍼스 정보 (필요한지 더 고민 필요)
+        private String school; // 추가 정보 (캠퍼스 필요 X -> 지역으로 대체)
+        private String local;  // 추가 정보 (지역)
+        private String imgUrl; // 추가 정보 (프로필 이미지)
 
-        private String email;
-
-        private String googleToken;
-        private String kakaoToken;
-        private String naverToken;
+        @Enumerated(EnumType.STRING)
+        private SocialType socialType;
+        private String socialToken;
 
         private String refreshToken; // JWT 사용 시 발행된 액세스 토큰과 리프레시 토큰 중 리프레시 토큰을 저장함
 
+        @Enumerated(EnumType.STRING)
+        private Role role;      // 최초 로그인인지 구분하기 위함 (guest - 최초 로그인 / user - 로그인 기록 존재 / admin - 관리자)
+
         public String toString(){
-            return "id : " + id + "\nnickname : " + nickname + "\ngender : " + gender + "\nbirth_date : " + birth_date + "\nschool : " + school + "\nemail : " + email +
-                     "\nrefreshToken : " + refreshToken + "\ngoogleToken : " + googleToken + "\nkakaoToken : " + kakaoToken + "\nnaverToken : " + naverToken;
+            return "id : " + id + "\nnickname : " + nickname + "\ngender : " + gender + "\nbirth_date : " + birth_date + "\nschool : " + school + "\nlocal : " + local +
+                    "\nimg : " + imgUrl + "\nemail : " + email + "\nrefreshToken : " + refreshToken + "\nsocialType : " + socialType + "\nsocialToken : " + socialToken;
         }
 
         public void updateRefreshToken(String updateRefreshToken) {  // 리프레시 토큰 재발급
