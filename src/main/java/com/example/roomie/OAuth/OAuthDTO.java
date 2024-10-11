@@ -72,9 +72,11 @@ public class OAuthDTO {
      * role은 GUEST로 설정
      */
     public User toEntity(SocialType socialType, OAuth2UserInfo oAuth2UserInfo) {
+        Long id = Long.parseLong(UUID.randomUUID().toString());
         return User.builder()
                 .socialType(socialType)
                 .socialToken(oAuth2UserInfo.getToken())
+                .id(id)
                 .email(UUID.randomUUID() + "@socialUser.com")
                 .role(Role.GUEST)
                 .build();

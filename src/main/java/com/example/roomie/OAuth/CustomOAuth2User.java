@@ -14,12 +14,14 @@ import java.util.Map;
 @Getter
 public class CustomOAuth2User extends DefaultOAuth2User {
 
+    private Long id;
     private String email;  // 최초 로그인 시 내 서비스는 사용자가 어떤 서비스에서 로그인 했는지 모르기 때문에 임시 이메일을 생성해 access token을 발급 받아 식별용으로 사용함
     private Role role;     // 최초 로그인 판단을 위해 필요. 처음 로그인 하는 사용자는 guest / 추가 정보를 입력한 사용자는 user로 설정
 
     public CustomOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes, String nameAttributeKey,
-                            String email, Role role) {
+                            Long id, String email, Role role) {
         super(authorities, attributes, nameAttributeKey);
+        this.id = id;
         this.email = email;
         this.role = role;
     }

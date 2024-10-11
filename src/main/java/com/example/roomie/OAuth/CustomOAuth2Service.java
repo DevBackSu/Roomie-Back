@@ -73,6 +73,7 @@ public class CustomOAuth2Service implements OAuth2UserService<OAuth2UserRequest,
                 Collections.singleton(new SimpleGrantedAuthority(createUser.getRole().getKey())), // 사용자의 권한 정보를 나타냄. USER / ADMIN / GUEST
                 attributes,  // OAuth2 제공자가 반환한 사용자 정보값
                 extractAttributes.getNameKey(),  // 식별키 (Google은 "sub" 등)
+                createUser.getId(),
                 createUser.getEmail(), // 사용자의 이메일
                 createUser.getRole()  // 권한 (USER / ADMIN / GUEST)
         );
@@ -101,6 +102,7 @@ public class CustomOAuth2Service implements OAuth2UserService<OAuth2UserRequest,
      * @return
      */
     private User getUser(OAuthDTO attributes, SocialType socialType) {
+        // 반환값에는 id / email
         User findUser = userRepository.findBySocialTypeAndSocialToken(socialType, attributes.getOAuth2UserInfo().getToken()).orElse(null);
 
         if(findUser == null) {
@@ -118,7 +120,8 @@ public class CustomOAuth2Service implements OAuth2UserService<OAuth2UserRequest,
      * @return
      */
     private User saveUser(OAuthDTO att, SocialType socialType) {
+        // id와 email은 랜덤값으로 설정 -> 랜덤한 값을 저장함
         User createdUser = att.toEntity(socialType, att.getOAuth2UserInfo());
-        return userRepository.save(createdUser);
+        return userRepository.save(createdUser); // save()는 매개변수로 들어간 객체와 반환된 객체의 값이 같다 -> 랜덤으로 저장된 id와 email을 가진 사용자 데이터가 반환됨 (이때는 무조건 Guest로 설정되기 때문에 추후 회원가입에서 데이터 수정 필요)
     }
 }

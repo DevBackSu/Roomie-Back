@@ -1,4 +1,4 @@
-package com.example.roomie.Config;
+package com.example.roomie.JWT;
 
 import com.example.roomie.Entity.User;
 import com.example.roomie.JWT.JwtServiceImpl;
