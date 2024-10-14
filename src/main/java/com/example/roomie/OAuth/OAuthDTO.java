@@ -72,7 +72,7 @@ public class OAuthDTO {
      * role은 GUEST로 설정
      */
     public User toEntity(SocialType socialType, OAuth2UserInfo oAuth2UserInfo) {
-        Long id = Long.parseLong(UUID.randomUUID().toString());
+        Long id = Long.parseLong(UUID.randomUUID().toString()); // 추후 해당 사용자의 auto increase가 저장됨
         return User.builder()
                 .socialType(socialType)
                 .socialToken(oAuth2UserInfo.getToken())

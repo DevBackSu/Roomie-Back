@@ -73,7 +73,7 @@ public class CustomOAuth2Service implements OAuth2UserService<OAuth2UserRequest,
                 Collections.singleton(new SimpleGrantedAuthority(createUser.getRole().getKey())), // 사용자의 권한 정보를 나타냄. USER / ADMIN / GUEST
                 attributes,  // OAuth2 제공자가 반환한 사용자 정보값
                 extractAttributes.getNameKey(),  // 식별키 (Google은 "sub" 등)
-                createUser.getId(),
+                createUser.getId(),    // DB AI 값
                 createUser.getEmail(), // 사용자의 이메일
                 createUser.getRole()  // 권한 (USER / ADMIN / GUEST)
         );
