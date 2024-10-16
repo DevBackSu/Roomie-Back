@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 public class MainController implements MainControllerDocs {
 
-    @GetMapping("/api/data")
+    @GetMapping("/")
     public List<String> getData(){
         return Arrays.asList("Data1", "Data2","데이터3");
     }
@@ -22,7 +22,7 @@ public class MainController implements MainControllerDocs {
         return Arrays.asList("hi", "start", "end", "go");
     }
 
-    @GetMapping("/")
+    @GetMapping("/api/home") // 이게 원래 /
     public String getHomeDate() {
         return "home";
     }
