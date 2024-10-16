@@ -1,5 +1,6 @@
 package com.example.roomie.Config;
 
+import com.example.roomie.JWT.JwtAuthFilter;
 import com.example.roomie.JWT.JwtServiceImpl;
 import com.example.roomie.OAuth.CustomOAuth2Service;
 import com.example.roomie.OAuth.OAuth2LoginFailHandler;
@@ -22,45 +23,15 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-//    private final JwtServiceImpl jwtService;
-//    private final ObjectMapper objectMapper;
-//    private final UserRepository userRepository;
-    private final OAuth2LoginSuccessHandler loginSuccessHandler;
+    private final JwtServiceImpl jwtService;
+    private final UserRepository userRepository;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailHandler oAuth2LoginFailHandler;
     private final CustomOAuth2Service customOAuth2Service;
 
+    // 이전에는 WebSecurityConfigurerAdatpter를 상속 받아 Override 했으나 이제는 @Bean으로 빈을 등록해서 컨테이너가 관리하도록 사용 가능
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-/**        http
-                // security 설정
-                .formLogin(AbstractHttpConfigurer::disable)
-                // 시큐리티에서 제공하는 로그인 form 사용 X (disable()메서드가 더이상 지원되지 않기 때문에 이렇게 바꿔야 한다고 하는데..) 이게 뭔데 이렇게 바꿈?
-                .httpBasic(AbstractHttpConfigurer::disable)
-//                .csrf().disable()
-                .csrf(AbstractHttpConfigurer::disable)
-//                .headers().frameOptions().disable()
-                .headers(AbstractHttpConfigurer::disable)
-
-                .and()
-
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                .and()
-
-                .authorizeHttpRequests()
-
-                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
-                .requestMatchers("/", "/sign-up").permitAll()
-                .anyRequest().authenticated()
-
-                .and()
-
-                .oauth2Login()
-                .successHandler(loginSuccessHandler)
-                .failureHandler(oAuth2LoginFailHandler)
-                .userInfoEndpoint().userService(customOAuth2Service);
- **/
-
         http
                 // 시큐리티에서 제공하는 기본 로그인 form 비활성화
                 .formLogin(AbstractHttpConfigurer::disable) // 기본 로그인 폼을 사용하지 않음
@@ -86,12 +57,22 @@ public class SecurityConfig {
 
                 // OAuth2 로그인 설정
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(loginSuccessHandler) // 로그인 성공 시 처리할 핸들러
+                        .successHandler(oAuth2LoginSuccessHandler) // 로그인 성공 시 처리할 핸들러
                         .failureHandler(oAuth2LoginFailHandler) // 로그인 실패 시 처리할 핸들러
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2Service)) // 사용자 정보 서비스 설정
                 );
 
         return http.build();
+    }
+
+    /**
+     * Jwt 인증 처리를 담당하는 JWT 인증 필터를 빈으로 등록함
+     * @return
+     */
+    @Bean
+    public JwtAuthFilter jwtAuthFilter() {
+        JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(jwtService, userRepository);
+        return jwtAuthFilter;
     }
 
 }

@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findById(Long id);
-    Optional<User> findByNicname(String nicname); // 별명 찾기
+    Optional<User> findByNickname(String nickname); // 별명 찾기
     Optional<User> findByRefreshToken(String refreshToken); // 리프레시 토큰 찾기
 
     /**
