@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor //builder 패턴을 사용할 때 매개변수가 없는 생성자 외 생성자가 존재할 수 있어서 모든 필드를 가진 생성자도 필요함
 @Entity
 @Builder // 빌더 패턴 적용
-@Table(name="USER")
+@Table(name="USERS")
 public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
