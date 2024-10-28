@@ -25,11 +25,11 @@ public class UserController implements UserControllerDocs {
         return other;
     }
 
-    @GetMapping("main/statistics") // 메인 화면 중 새/부엉이 통계값 반환
+    @GetMapping("main/statistics") // 메인 화면 중 종달새/올빼미 통계값 반환
     public Map<String, Integer> getStatistics() {
         Map<String, Integer> statistics = new HashMap<>();
-        statistics.put("새", 2); // 새 count 값
-        statistics.put("부엉이", 2); // 부엉이 count 값
+        statistics.put("새", 2); // 종달새 count 값
+        statistics.put("부엉이", 2); // 올빼미 count 값
         return statistics;
     }
 
