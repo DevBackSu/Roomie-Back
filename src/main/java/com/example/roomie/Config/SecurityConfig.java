@@ -51,7 +51,7 @@ public class SecurityConfig {
                 // URL별로 접근 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll() // 특정 리소스에 대한 접근 허용
-                        .requestMatchers("/", "/sign-up").permitAll() // 회원가입 페이지는 인증 없이 접근 허용
+                        .requestMatchers("/", "/sign-up", "/login").permitAll() // 회원가입, 로그인 페이지는 인증 없이 접근 허용
                         .anyRequest().authenticated() // 나머지 요청은 인증이 필요
                 )
 

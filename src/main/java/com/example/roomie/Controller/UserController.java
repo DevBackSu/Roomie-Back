@@ -5,6 +5,7 @@ import com.example.roomie.DTO.UserDTO;
 import com.example.roomie.SwaggerForm.UserControllerDocs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -12,6 +13,11 @@ import java.util.*;
 @RequiredArgsConstructor
 @RestController
 public class UserController implements UserControllerDocs {
+
+    @PostMapping("/login")
+    public String Login() {
+        return "test";
+    }
 
     @GetMapping("/main/user")
     public UserDTO getUser() {
