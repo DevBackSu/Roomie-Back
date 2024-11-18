@@ -72,7 +72,10 @@ public class OAuthDTO {
      * role은 GUEST로 설정
      */
     public User toEntity(SocialType socialType, OAuth2UserInfo oAuth2UserInfo) {
-        Long id = Long.parseLong(UUID.randomUUID().toString()); // 추후 해당 사용자의 auto increase가 저장됨
+        Long id = UUID.randomUUID().getMostSignificantBits(); // 추후 해당 사용자의 auto increase가 저장됨
+        // 기본 uuid의 반환값 : uuid 형식의 문자열로 128비트의 (7a3baf9d-dc83-49b5-b5ec-c94460c14cdf) 이런 값이 반환됨. 따라서 Long 타입으로 저장하려면 64비트짜리로 잘라서 변환해야 함
+        // getMostSignificantBits() 는 상위 64비트를 잘라서 반환함
+        // 단, 위와 같이 자르면 충돌 가능성을 염두에 두어야 함.
         return User.builder()
                 .socialType(socialType)
                 .socialToken(oAuth2UserInfo.getToken())
