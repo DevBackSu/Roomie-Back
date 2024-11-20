@@ -1,12 +1,10 @@
 package com.example.roomie.Config;
 
-import com.example.roomie.JWT.JwtAuthFilter;
 import com.example.roomie.JWT.JwtServiceImpl;
 import com.example.roomie.OAuth.CustomOAuth2Service;
 import com.example.roomie.OAuth.OAuth2LoginFailHandler;
 import com.example.roomie.OAuth.OAuth2LoginSuccessHandler;
 import com.example.roomie.Repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity  // spring security 활성화
@@ -74,10 +69,10 @@ public class SecurityConfig {
      * Jwt 인증 처리를 담당하는 JWT 인증 필터를 빈으로 등록함
      * @return
      */
-    @Bean
-    public JwtAuthFilter jwtAuthFilter() {
-        JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(jwtService, userRepository);
-        return jwtAuthFilter;
-    }
+//    @Bean
+//    public JwtAuthFilter jwtAuthFilter() {
+//        JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(jwtService, userRepository);
+//        return jwtAuthFilter;
+//    }
 
 }

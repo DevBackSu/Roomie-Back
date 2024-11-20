@@ -41,11 +41,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             // 사용자의 Role이 Guest면 처음 요청한 사용자이기 때문에 회원가입 페이지로 리다이렉트 필요
             if(oAuth2User.getRole() == Role.GUEST) {
-                String accessToken = jwtService.createAccessToken(oAuth2User.getId()); // 나는 토큰에 id만 넣을 예정 (email 넣을까도 생각했는데 굳이? 싶음. 최대한 사용자 정보를 안 담고 싶다)
-                response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken); // 헤더에 key : Auth / value : Bearer ~~~ 가 추가됨
+//                String accessToken = jwtService.createAccessToken(oAuth2User.getId()); // 나는 토큰에 id만 넣을 예정 (email 넣을까도 생각했는데 굳이? 싶음. 최대한 사용자 정보를 안 담고 싶다)
+//                response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken); // 헤더에 key : Auth / value : Bearer ~~~ 가 추가됨
                 response.sendRedirect("oauth2/sign-up"); // 프론트의 회원가입 추가 정보 입력 form으로 리다이렉트
 
-                jwtService.sendAllToken(response, accessToken, null); // accessToken과 refreshToken을 헤더에 담아 회원가입 추가 정보 입력 폼으로 리다이렉트 함
+//                jwtService.sendAllToken(response, accessToken, null); // accessToken과 refreshToken을 헤더에 담아 회원가입 추가 정보 입력 폼으로 리다이렉트 함
                 // 위 값을 보내면 프론트에서 회원가입 추가 정보 입력 폼으로 이동하도록 구현하기
             }
             else {
@@ -80,31 +80,31 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         }
 
         // refresh token이 있는지 확인하기 위해 Request 헤더에서 추출해 검사
-        Optional<String> opToken = jwtService.extractRefreshToken(request);
-
-        // 추출한 opToken에 값이 존재하는지 확인
-        if(opToken.isPresent()) {
-            // 값이 존재할 경우 아래 진행
-            String refreshToken = opToken.get();
-
-            // 유효 여부 확인 -> refresh token이 유효하면 access token 재발급
-            if(jwtService.isTokenValid(refreshToken)) {
-                String accessToken = jwtService.createAccessToken(userId);
-                jwtService.sendAccessToken(response, accessToken);
-            }
-            // 유효하지 않다면 -> 둘 다 재발급
-            else {
-                String newRefreshToken = jwtService.createRefreshToken();
-                String accessToken = jwtService.createAccessToken(userId);
-
-                jwtService.updateRefreshToken(userId, newRefreshToken);
-
-                jwtService.sendAllToken(response, accessToken, newRefreshToken);
-            }
-        }
-        // 값이 존재하지 않을 경우
-        else {
-            // 다른 무언가가 필요한가?
-        }
+//        Optional<String> opToken = jwtService.extractRefreshToken(request);
+//
+//        // 추출한 opToken에 값이 존재하는지 확인
+//        if(opToken.isPresent()) {
+//            // 값이 존재할 경우 아래 진행
+//            String refreshToken = opToken.get();
+//
+//            // 유효 여부 확인 -> refresh token이 유효하면 access token 재발급
+//            if(jwtService.isTokenValid(refreshToken)) {
+//                String accessToken = jwtService.createAccessToken(userId);
+//                jwtService.sendAccessToken(response, accessToken);
+//            }
+//            // 유효하지 않다면 -> 둘 다 재발급
+//            else {
+//                String newRefreshToken = jwtService.createRefreshToken();
+//                String accessToken = jwtService.createAccessToken(userId);
+//
+//                jwtService.updateRefreshToken(userId, newRefreshToken);
+//
+//                jwtService.sendAllToken(response, accessToken, newRefreshToken);
+//            }
+//        }
+//        // 값이 존재하지 않을 경우
+//        else {
+//            // 다른 무언가가 필요한가?
+//        }
     }
 }
