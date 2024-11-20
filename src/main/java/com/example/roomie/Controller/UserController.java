@@ -14,7 +14,8 @@ import java.util.*;
 @RestController
 public class UserController implements UserControllerDocs {
 
-    @PostMapping("/login")
+
+    @PostMapping("/")
     public String Login() {
         return "test";
     }

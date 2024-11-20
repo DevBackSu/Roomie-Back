@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 public class MainController implements MainControllerDocs {
 
-    @GetMapping("/")
+    @GetMapping("/api/test")
     public List<String> getData(){
         return Arrays.asList("Data1", "Data2","데이터3");
     }
