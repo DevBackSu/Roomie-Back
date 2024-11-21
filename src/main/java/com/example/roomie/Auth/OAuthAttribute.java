@@ -30,7 +30,16 @@ public class OAuthAttribute {
      * -> OAuth2User에서 반환하는 사용자 정보는 Map이기 때문에 값을 하나하나 변환해야 함
      */
     public static OAuthAttribute of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
-        return ofGoogle(userNameAttributeName, attributes);
+        switch (registrationId) {
+            case "google" :
+                return ofGoogle(userNameAttributeName, attributes);
+//            case "kakao" :
+//                return ofKakao(userNameAttributeName, attributes);
+//            case "naver" :
+//                return ofNaver(userNameAttributeName, attributes);
+            default:
+                throw new RuntimeException();
+        }
     }
 
     private static OAuthAttribute ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {

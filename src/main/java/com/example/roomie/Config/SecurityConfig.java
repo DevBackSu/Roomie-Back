@@ -1,6 +1,7 @@
 package com.example.roomie.Config;
 
 import com.example.roomie.Auth.CustomOAuth2UserService;
+import com.example.roomie.Auth.OAuth2LoginSuccessHandler;
 import com.example.roomie.Entity.Role;
 import com.example.roomie.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -19,8 +21,8 @@ public class SecurityConfig {
 
 //    private final JwtServiceImpl jwtService;
     private final UserRepository userRepository;
-//    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-//    private final OAuth2LoginFailHandler oAuth2LoginFailHandler;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailHandler oAuth2LoginFailHandler;
     private final CustomOAuth2UserService customOAuth2Service;
 
     // 이전에는 WebSecurityConfigurerAdatpter를 상속 받아 Override 했으나 이제는 @Bean으로 빈을 등록해서 컨테이너가 관리하도록 사용 가능
@@ -43,7 +45,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // 최신 방식으로 frameOptions 설정
 
                 // 세션을 사용하지 않음 (JWT 기반 인증을 사용할 경우 상태 없음 모드로 설정)
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // URL별로 접근 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
@@ -55,8 +57,8 @@ public class SecurityConfig {
 
                 // OAuth2 로그인 설정
                 .oauth2Login(oauth2 -> oauth2
-//                        .successHandler(oAuth2LoginSuccessHandler) // 로그인 성공 시 처리할 핸들러
-//                        .failureHandler(oAuth2LoginFailHandler) // 로그인 실패 시 처리할 핸들러
+                        .successHandler(oAuth2LoginSuccessHandler) // 로그인 성공 시 처리할 핸들러
+                        .failureHandler(oAuth2LoginFailHandler) // 로그인 실패 시 처리할 핸들러
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2Service)) // 사용자 정보 서비스 설정
                 );
 
@@ -67,10 +69,10 @@ public class SecurityConfig {
      * Jwt 인증 처리를 담당하는 JWT 인증 필터를 빈으로 등록함
      * @return
      */
-//    @Bean
-//    public JwtAuthFilter jwtAuthFilter() {
-//        JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(jwtService, userRepository);
-//        return jwtAuthFilter;
-//    }
+    @Bean
+    public JwtAuthFilter jwtAuthFilter() {
+        JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(jwtService, userRepository);
+        return jwtAuthFilter;
+    }
 
 }
