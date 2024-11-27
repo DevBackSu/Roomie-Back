@@ -24,8 +24,8 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final LoginSuccessHandler loginSuccessHandler;
-    private final LoginFailureHandler loginFailureHandler;
+    private final LoginSuccessHandler OAuthloginSuccessHandler;
+    private final LoginFailureHandler OAuthloginFailureHandler;
     private final CustomOAuth2UserService customOAuth2Service;
 
     // 이전에는 WebSecurityConfigurerAdatpter를 상속 받아 Override 했으나 이제는 @Bean으로 빈을 등록해서 컨테이너가 관리하도록 사용 가능
@@ -52,7 +52,7 @@ public class SecurityConfig {
 
                 // URL별로 접근 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico","/h2-console", "/h2-console/**").permitAll() // 특정 리소스에 대한 접근 허용
+                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console", "/h2-console/**").permitAll() // 특정 리소스에 대한 접근 허용
                         .requestMatchers("/", "/sign-up", "/login").permitAll() // 회원가입, 로그인 페이지는 인증 없이 접근 허용
                         .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated() // 나머지 요청은 인증이 필요
@@ -60,8 +60,8 @@ public class SecurityConfig {
 
                 // OAuth2 로그인 설정
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(loginSuccessHandler) // 로그인 성공 시 처리할 핸들러
-                        .failureHandler(loginFailureHandler) // 로그인 실패 시 처리할 핸들러
+                        .successHandler(OAuthloginSuccessHandler) // 로그인 성공 시 처리할 핸들러
+                        .failureHandler(OAuthloginFailureHandler) // 로그인 실패 시 처리할 핸들러
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2Service)) // 사용자 정보 서비스 설정
                 );
 
@@ -70,26 +70,13 @@ public class SecurityConfig {
 
     /**
      * Jwt 인증 처리를 담당하는 JWT 인증 필터를 빈으로 등록함
+     *
      * @return
      */
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthFilter() {
-        return new JwtAuthenticationProcessingFilter(jwtService, userRepository);
+        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
+        return jwtAuthenticationFilter;
     }
 
-    /**
-     * 로그인 성공 시 호출되는 빈 등록
-     */
-    @Bean
-    public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(userRepository);
-    }
-
-    /**
-     * 로그인 실패 시 호출되는 빈 등록
-     */
-    @Bean
-    public LoginFailureHandler loginFailureHandler() {
-        return new LoginFailureHandler();
-    }
 }

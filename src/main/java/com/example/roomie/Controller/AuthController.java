@@ -18,8 +18,8 @@ public class AuthController {
         return ResponseEntity.ok("로그인 페이지로 이동");
     }
 
-    @PostMapping("/google")
-    public ResponseEntity<?> googleLogin(@RequestBody)
+//    @PostMapping("/google")
+//    public ResponseEntity<?> googleLogin(@RequestBody)
 
 
 }
