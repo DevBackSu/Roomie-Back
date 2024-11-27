@@ -9,7 +9,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/oauth2/sign-up")
-                .allowedOrigins("http://localhost:3000");
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000") // React 서버 URL
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*");
     }
 }

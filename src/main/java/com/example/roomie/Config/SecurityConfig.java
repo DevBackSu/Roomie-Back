@@ -1,8 +1,11 @@
 package com.example.roomie.Config;
 
 import com.example.roomie.Auth.CustomOAuth2UserService;
-import com.example.roomie.Auth.OAuth2LoginSuccessHandler;
+import com.example.roomie.Auth.LoginFailureHandler;
+import com.example.roomie.Auth.LoginSuccessHandler;
 import com.example.roomie.Entity.Role;
+import com.example.roomie.JWT.JwtAuthenticationProcessingFilter;
+import com.example.roomie.JWT.JwtService;
 import com.example.roomie.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,10 +22,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-//    private final JwtServiceImpl jwtService;
+    private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-    private final OAuth2LoginFailHandler oAuth2LoginFailHandler;
+    private final LoginSuccessHandler loginSuccessHandler;
+    private final LoginFailureHandler loginFailureHandler;
     private final CustomOAuth2UserService customOAuth2Service;
 
     // 이전에는 WebSecurityConfigurerAdatpter를 상속 받아 Override 했으나 이제는 @Bean으로 빈을 등록해서 컨테이너가 관리하도록 사용 가능
@@ -51,14 +54,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico","/h2-console", "/h2-console/**").permitAll() // 특정 리소스에 대한 접근 허용
                         .requestMatchers("/", "/sign-up", "/login").permitAll() // 회원가입, 로그인 페이지는 인증 없이 접근 허용
-                        .requestMatchers("admin/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated() // 나머지 요청은 인증이 필요
                 )
 
                 // OAuth2 로그인 설정
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2LoginSuccessHandler) // 로그인 성공 시 처리할 핸들러
-                        .failureHandler(oAuth2LoginFailHandler) // 로그인 실패 시 처리할 핸들러
+                        .successHandler(loginSuccessHandler) // 로그인 성공 시 처리할 핸들러
+                        .failureHandler(loginFailureHandler) // 로그인 실패 시 처리할 핸들러
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2Service)) // 사용자 정보 서비스 설정
                 );
 
@@ -70,9 +73,23 @@ public class SecurityConfig {
      * @return
      */
     @Bean
-    public JwtAuthFilter jwtAuthFilter() {
-        JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(jwtService, userRepository);
-        return jwtAuthFilter;
+    public JwtAuthenticationProcessingFilter jwtAuthFilter() {
+        return new JwtAuthenticationProcessingFilter(jwtService, userRepository);
     }
 
+    /**
+     * 로그인 성공 시 호출되는 빈 등록
+     */
+    @Bean
+    public LoginSuccessHandler loginSuccessHandler() {
+        return new LoginSuccessHandler(userRepository);
+    }
+
+    /**
+     * 로그인 실패 시 호출되는 빈 등록
+     */
+    @Bean
+    public LoginFailureHandler loginFailureHandler() {
+        return new LoginFailureHandler();
+    }
 }
