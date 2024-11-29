@@ -36,9 +36,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService(); // delegate에 new DefaultOAuth2UserService 생성. 이는 스프링 시큐리티에서 기본 제공하는 OAuth2UserService 구현체로, 주어진 OAuth2UserRequest를 이용해 인증 서버로부터 사용자 정보를 가져와 delegate에 저장함
         OAuth2User oAuth2User = delegate.loadUser(userRequest); // OAuth2UserRequest를 받아 해당 OAuth2 프로바이더로부터 사용자 정보를 가져오는 메서드.
         // 반환된 oAuth2User 객체는 OAuth2 인증이 완료된 후 구글, 카카오 등의 프로바이더에서 제공하는 사용자 정보를 포함함. 예를 들어, Google 로그인을 시도했다면 구글에서 제공하는 name, email 등을 가지고 있음
-        /**
-         *
-         */
+
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         SocialType socialType = getSocialType(registrationId);
         return null;
