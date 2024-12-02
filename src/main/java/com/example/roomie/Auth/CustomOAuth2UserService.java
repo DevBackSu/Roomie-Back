@@ -1,14 +1,20 @@
 package com.example.roomie.Auth;
 
 import com.example.roomie.Entity.SocialType;
+import com.example.roomie.Entity.User;
+import com.example.roomie.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * OAuth2의 로그인 로직을 담당하는 Service 클래스
@@ -17,6 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+    private final UserRepository userRepository;
     private static final String NAVER = "naver";
     private static final String KAKAO = "kakao";
     @Override  //OAuth2UserService 인터페이스의 loadUser 메서드를 재정의함
@@ -39,7 +46,21 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         SocialType socialType = getSocialType(registrationId);
-        return null;
+        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName(); //OAuth2 로그인 시 키가 되는 값
+        Map<String, Object> attribute = oAuth2User.getAttributes(); // 소셜 로그인에서 API가 제공하는 userInfo의 Json 값
+
+        OAuthAttribute extractAttributes = OAuthAttribute.of(socialType, userNameAttributeName, attribute);
+
+        User createdUser = getUser(extractAttributes, socialType); // getUser 메소드로 User 객체 생성 후 반환
+
+        return new CustomOAuth2User(
+                Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
+                attribute,
+                extractAttributes.getNameKey(),
+                createdUser.getEmail(),
+                createdUser.getNickname(),
+                createdUser.getRole()
+        );
     }
     private SocialType getSocialType(String registrationId) {
         if(NAVER.equals(registrationId)) {
@@ -49,5 +70,29 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             return SocialType.Kakao;
         }
         return SocialType.Google;
+    }
+
+    /**
+     * 소셜 타입과 attributes에 들어 있는 소셜 로그인의 식별값 id를 통해 회원을 찾아 반환하는 메소드
+     * 만약 찾은 회원이 있으면 그대로 반환하고 없으면 saveUser() 호출 -> 회원 저장
+     */
+    private User getUser(OAuthAttribute attribute, SocialType socialType) {
+        User findUser = userRepository.findBySocialTypeAndSocialToken(socialType, attribute.getOAuth2UserInfo().getToken()).orElse(null);
+
+        if(findUser == null) {
+            return saveUser(attribute, socialType);
+        }
+
+        return findUser;
+    }
+
+    /**
+     * OAuthAttributes의 toEntity() 메소드를 통해 빌더로 User 객체 생성 후 반환
+     * 생성된 User 객체를 DB에 저장함 (이때, 사용자 정보는 socialType / socialToken / email / role만 있음)
+     */
+    private User saveUser(OAuthAttribute attribute, SocialType socialType) {
+        User createdUser = attribute.toEntity(socialType, attribute.getOAuth2UserInfo());
+
+        return userRepository.save(createdUser);
     }
 }
