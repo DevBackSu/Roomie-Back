@@ -32,7 +32,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//                .cors(AbstractHttpConfigurer::disable) // CORS 문제를 해결하기 위해 설정 추가
+                .cors(AbstractHttpConfigurer::disable) // CORS 문제를 해결하기 위해 설정 추가
 //                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // 시큐리티에서 제공하는 기본 로그인 form 비활성화
                 .formLogin(AbstractHttpConfigurer::disable) // 기본 로그인 폼을 사용하지 않음
