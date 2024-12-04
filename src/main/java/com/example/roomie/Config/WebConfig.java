@@ -23,18 +23,18 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("http://localhost:3000"); // 리액트 서버 URL
-        corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addExposedHeader("Auth");
-        corsConfiguration.addExposedHeader("Refresh");
-        corsConfiguration.setExposedHeaders(List.of("accessHeader", "refreshHeader")); // 노출할 헤더
-        corsConfiguration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        corsConfiguration.addAllowedOrigin("http://localhost:3000"); // React 서버 URL
+//        corsConfiguration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
+//        corsConfiguration.addAllowedHeader("*"); // 모든 헤더 허용
+//        corsConfiguration.addExposedHeader("Auth"); // Access Token 헤더
+//        corsConfiguration.addExposedHeader("Auth-refresh"); // Refresh Token 헤더
+//        corsConfiguration.setAllowCredentials(true); // 인증 정보 포함 (쿠키, 헤더 등)
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", corsConfiguration);
+//        return source;
+//    }
 }

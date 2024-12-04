@@ -16,6 +16,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity  // spring security 활성화
@@ -32,7 +35,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(AbstractHttpConfigurer::disable) // CORS 문제를 해결하기 위해 설정 추가
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                .cors(AbstractHttpConfigurer::disable) // CORS 문제를 해결하기 위해 설정 추가
 //                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // 시큐리티에서 제공하는 기본 로그인 form 비활성화
                 .formLogin(AbstractHttpConfigurer::disable) // 기본 로그인 폼을 사용하지 않음
@@ -53,7 +57,7 @@ public class SecurityConfig {
                 // URL별로 접근 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console", "/h2-console/**").permitAll() // 특정 리소스에 대한 접근 허용
-                        .requestMatchers("/", "/sign-up", "/login").permitAll() // 회원가입, 로그인 페이지는 인증 없이 접근 허용
+                        .requestMatchers("/", "/login").permitAll() // 회원가입, 로그인 페이지는 인증 없이 접근 허용
                         .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated() // 나머지 요청은 인증이 필요
                 )
@@ -66,6 +70,20 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("http://localhost:3000"); // React 서버 URL
+        corsConfiguration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
+        corsConfiguration.addAllowedHeader("*"); // 모든 헤더 허용
+        corsConfiguration.addExposedHeader("Auth"); // Access Token 헤더
+        corsConfiguration.addExposedHeader("Auth-refresh"); // Refresh Token 헤더
+        corsConfiguration.setAllowCredentials(true); // 인증 정보 포함 (쿠키, 헤더 등)
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration); // 모든 주소 요청에 위 설정 적용
+        return source;
     }
 
     /**
