@@ -10,5 +10,6 @@ public class UserDTO {
     private String socialId;
 
     private String token;
+    private String role;
 
 }

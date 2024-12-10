@@ -66,15 +66,6 @@ public class User {
                 "\nimg : " + imgUrl + "\nemail : " + email + "\nrefreshToken : " + refreshToken + "\nsocialType : " + socialType + "\nsocialToken : " + socialToken;
     }
 
-    public User update(String name) {
-        this.nickname = name;
-
-        return this;
-    }
-
-    public String getRoleKey() {
-        return this.role.getKey();
-    }
 
     public void updateRefreshToken(String updateRefreshToken) {  // 리프레시 토큰 재발급
         this.refreshToken = updateRefreshToken;

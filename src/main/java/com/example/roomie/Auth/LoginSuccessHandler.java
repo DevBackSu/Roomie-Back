@@ -114,6 +114,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 
     private void handleGuestLogin(HttpServletResponse response, User u) throws IOException {
+
+        System.out.println("\n\n\n-----------------------\n");
+        System.out.println(u.toString());
+        System.out.println("\n-----------------------\n\n\n");
+
         String accessToken = jwtService.createAccessToken(u.getId());
 
 //        String url = String.format(
