@@ -19,4 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * 소셜 로그인 후 추가 정보 insert를 위한 사용자 select 메소드
      */
     Optional<User> findBySocialTypeAndSocialToken(SocialType socialType, String socialToken);
+
+    /**
+     * 회원가입 후 사용자 정보 업데이트
+     */
 }

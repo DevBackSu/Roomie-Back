@@ -2,11 +2,13 @@ package com.example.roomie.DTO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class UserSingUpDTO {
     private Long userId;
     private String email;
@@ -17,6 +19,8 @@ public class UserSingUpDTO {
     private String school;
     private String local;
     private String imgUrl;
+    private String refreshToken;
+    private String role;
 
     @Override
     public String toString() {

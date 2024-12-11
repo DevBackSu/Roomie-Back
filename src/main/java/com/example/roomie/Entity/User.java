@@ -51,9 +51,6 @@ public class User {
     private String socialToken;
 
     @Column
-    private String accessToken; // 액세스 요청을 위한 token
-
-    @Column
     private String refreshToken; // JWT 사용 시 발행된 액세스 토큰과 리프레시 토큰 중 리프레시 토큰을 저장함
 
     @Getter

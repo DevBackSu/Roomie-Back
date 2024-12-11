@@ -97,8 +97,15 @@ public class JwtService {
      */
     public Optional<String> extractAccessToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(accessHeader))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+                .filter(accessToken -> accessToken.startsWith(BEARER))
+                .map(accessToken -> accessToken.replace(BEARER, ""));
+    }
+
+    /**
+     * Bearer XXX 형식으로 반환된 access token에서 순수 토큰만 반환
+     */
+    public String extractTokenAccessToken(String accessToken) {
+        return accessToken.replace(BEARER, "");
     }
 
     /**
