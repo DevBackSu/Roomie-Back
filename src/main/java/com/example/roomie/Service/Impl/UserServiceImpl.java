@@ -1,5 +1,6 @@
 package com.example.roomie.Service.Impl;
 
+import com.auth0.jwt.interfaces.Claim;
 import com.example.roomie.DTO.UserSingUpDTO;
 import com.example.roomie.JWT.JwtService;
 import com.example.roomie.Repository.UserRepository;
@@ -30,21 +31,33 @@ public class UserServiceImpl implements UserService {
 
         String accessToken = jwtService.extractTokenAccessToken(authHeader);
 
+        System.out.println("\n\n\n-----------------------\n");
+        System.out.println(accessToken);
+        System.out.println("\n-----------------------\n\n\n");
+
         if(!jwtService.isTokenValid(accessToken)) {
             throw new IllegalArgumentException("Invalid Access Token");
         }
 
-        Optional<String> userId = jwtService.extractId(accessToken);
+        Long userId = jwtService.extractId(accessToken)
+                .orElseThrow(() -> new IllegalArgumentException("Access token is missing or invalid"));
+//        Optional<Long> userId = jwtService.extractId(accessToken);
+//        Long user_Id = jwtService.extractId(accessToken).get();
 
-        if(userId.isEmpty()) {
-            throw new IllegalArgumentException("access token check!");
-        }
+        System.out.println(userId);
+//        System.out.println(user_Id);
+
+//        if(userId.isEmpty()) {
+//            throw new IllegalArgumentException("access token check!");
+//        }
+
+
 
         userSingUpDTO.setUserId(Long.valueOf(String.valueOf(userId)));
         userSingUpDTO.setRole("USER");
 
 
-        token.put("success", "true");
+        token.put("success", true);
 
 
 

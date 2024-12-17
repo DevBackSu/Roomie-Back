@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @NoArgsConstructor
 @Getter
 @Setter
@@ -15,7 +13,7 @@ public class UserSingUpDTO {
     private String nickname;
     private String gender;
     private String mainAnimal;
-    private LocalDate birthDate;
+    private String birthDate;
     private String school;
     private String local;
     private String imgUrl;

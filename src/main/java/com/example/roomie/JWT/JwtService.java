@@ -34,7 +34,7 @@ public class JwtService {
     private String refreshHeader;
 
     private final UserRepository userRepository;
-    private static final String BEARER = "Bearer";
+    private static final String BEARER = "Bearer ";
     private static final String ACCESS_TOKEN_SUB = "AccessToken";
     private static final String REFRESH_TOKEN_SUB = "RefreshToken";
     private static final String ID_CLAIM = "user_id";
@@ -104,8 +104,8 @@ public class JwtService {
     /**
      * Bearer XXX 형식으로 반환된 access token에서 순수 토큰만 반환
      */
-    public String extractTokenAccessToken(String accessToken) {
-        return accessToken.replace(BEARER, "");
+    public String extractTokenAccessToken(String accessHeader) {
+        return (accessHeader != null && accessHeader.startsWith(BEARER)) ? accessHeader.substring(BEARER.length()) : null;
     }
 
     /**
@@ -115,18 +115,18 @@ public class JwtService {
      * 유효하면 getClaim()으로 id 추출
      * 유효하지 않으면 빈 Optional 객체 반환
      */
-    public Optional<String> extractId(String accessToken) {
+    public Optional<Long> extractId(String accessHeader) {
         try {
             return  // 유효성 검사를 위한 알고리즘이 있는 JWT verifier builder 반환
                     Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
                             // 반환된 builder로 JWT verifier 생성
                             .build()
                             // accessToken을 검증하고 유효하지 않으면 예외를 발생시킴
-                            .verify(accessToken)
+                            .verify(accessHeader)
                             // Claim 가져오기 (id값)
                             .getClaim(ID_CLAIM)
                             // 가져온 claim을 String으로 변환해 return
-                            .asString());
+                            .asLong());
         } catch (Exception e) {
             log.error("Access Token이 유효하지 않습니다.");
             return Optional.empty();

@@ -31,8 +31,8 @@ public class User {
     private int mainAnimal; // 추가 정보 | 1 : 아침형 (종달새) / 2 : 저녁형 (올빼미)
 
     @Column(name = "birth_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate birthDate; // 추가 정보 (
+    @DateTimeFormat(pattern = "yyyy-MM")
+    private LocalDate birthDate; // 추가 정보
 
     @Column
     private String school; // 추가 정보 (캠퍼스 필요 X -> 지역으로 대체)

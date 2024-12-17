@@ -6,5 +6,5 @@ import java.util.Map;
 
 public interface UserService {
 
-    public Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader, String refreshToken);
+    Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader, String refreshToken);
 }
