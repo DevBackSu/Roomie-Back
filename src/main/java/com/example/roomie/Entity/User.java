@@ -3,12 +3,14 @@ package com.example.roomie.Entity;
 import com.example.roomie.DTO.UserSingUpDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자가 protected로 제한됨 -> 외부에서 new User(); 불가능!
 @AllArgsConstructor //builder 패턴을 사용할 때 매개변수가 없는 생성자 외 생성자가 존재할 수 있어서 모든 필드를 가진 생성자도 필요함
 @Entity

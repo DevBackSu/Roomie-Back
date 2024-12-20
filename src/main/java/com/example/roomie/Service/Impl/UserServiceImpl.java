@@ -55,22 +55,21 @@ public class UserServiceImpl implements UserService {
         userSingUpDTO.setRole("USER");
         userSingUpDTO.setRefreshToken(newRefreshToken);
 
-        // User 객체 생성
-        User user = User.builder()
-                .id(userId)
-                .email(userSingUpDTO.getEmail())
-                .nickname(userSingUpDTO.getNickname())
-                .gender(userSingUpDTO.getGender())
-                .mainAnimal(userSingUpDTO.getMainAnimal())
-                .birthDate(YearMonth.parse(userSingUpDTO.getBirthDate()))
-                .school(userSingUpDTO.getSchool())
-                .local(userSingUpDTO.getLocal())
-                .imgUrl(userSingUpDTO.getImgUrl())
-                .refreshToken(newRefreshToken)
-                .role(Role.valueOf(userSingUpDTO.getRole()))
-                .build();
+// User 객체 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
-        //
+        // 필요한 필드만 업데이트
+        if (userSingUpDTO.getNickname() != null) user.setNickname(userSingUpDTO.getNickname());
+        if (userSingUpDTO.getGender() != null) user.setGender(userSingUpDTO.getGender());
+        if (userSingUpDTO.getMainAnimal() != 0) user.setMainAnimal(userSingUpDTO.getMainAnimal());
+        if (userSingUpDTO.getBirthDate() != null) user.setBirthDate(YearMonth.parse(userSingUpDTO.getBirthDate()));
+        if (userSingUpDTO.getSchool() != null) user.setSchool(userSingUpDTO.getSchool());
+        if (userSingUpDTO.getLocal() != null) user.setLocal(userSingUpDTO.getLocal());
+        if (userSingUpDTO.getImgUrl() != null) user.setImgUrl(userSingUpDTO.getImgUrl());
+        if (newRefreshToken != null) user.setRefreshToken(newRefreshToken);
+
+        // 데이터 저장
         userRepository.save(user);
 
         token.put("success", true);
