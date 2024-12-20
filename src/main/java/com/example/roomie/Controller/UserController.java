@@ -37,11 +37,10 @@ public class UserController implements UserControllerDocs {
         try {
             Map<String, Object> token = userService.saveUserInfo(userSingUpDTO, authHeader, (refreshToken != null ? refreshToken : ""));
 
-            System.out.println(token.get("success").equals(true));
-//            if(token.get("success").equals(true))
-
+            // 회원 가입 성공
             return ResponseEntity.ok(token);
         } catch (Exception e) {
+            //회원 가입 중 오류 발생
             log.error("Error while saving user info : " , e);
             Map<String, Object> error = new HashMap<>();
             error.put("success", false);

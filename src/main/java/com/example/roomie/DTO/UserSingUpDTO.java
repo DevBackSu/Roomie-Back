@@ -12,7 +12,7 @@ public class UserSingUpDTO {
     private String email;
     private String nickname;
     private String gender;
-    private String mainAnimal;
+    private int mainAnimal;
     private String birthDate;
     private String school;
     private String local;

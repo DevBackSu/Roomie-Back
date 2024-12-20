@@ -1,13 +1,15 @@
 package com.example.roomie.Entity;
 
+import com.example.roomie.DTO.UserSingUpDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자가 protected로 제한됨 -> 외부에서 new User(); 불가능!
 @AllArgsConstructor //builder 패턴을 사용할 때 매개변수가 없는 생성자 외 생성자가 존재할 수 있어서 모든 필드를 가진 생성자도 필요함
 @Entity
 @Builder // 빌더 패턴 적용
@@ -32,7 +34,7 @@ public class User {
 
     @Column(name = "birth_date")
     @DateTimeFormat(pattern = "yyyy-MM")
-    private LocalDate birthDate; // 추가 정보
+    private YearMonth birthDate; // 추가 정보
 
     @Column
     private String school; // 추가 정보 (캠퍼스 필요 X -> 지역으로 대체)
@@ -62,7 +64,6 @@ public class User {
         return "id : " + id + "\nnickname : " + nickname + "\ngender : " + gender + "\nbirth_date : " + birthDate + "\nschool : " + school + "\nlocal : " + local +
                 "\nimg : " + imgUrl + "\nemail : " + email + "\nrefreshToken : " + refreshToken + "\nsocialType : " + socialType + "\nsocialToken : " + socialToken;
     }
-
 
     public void updateRefreshToken(String updateRefreshToken) {  // 리프레시 토큰 재발급
         this.refreshToken = updateRefreshToken;
