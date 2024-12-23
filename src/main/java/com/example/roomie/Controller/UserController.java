@@ -1,18 +1,16 @@
 package com.example.roomie.Controller;
 
-import com.example.roomie.DTO.RankDTO;
-import com.example.roomie.DTO.UserDTO;
 import com.example.roomie.DTO.UserSingUpDTO;
 import com.example.roomie.Service.UserService;
 import com.example.roomie.SwaggerForm.UserControllerDocs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,25 +25,47 @@ public class UserController implements UserControllerDocs {
     public ResponseEntity<Map<String, Object>> saveUserInfo(@RequestBody UserSingUpDTO userSingUpDTO, @RequestHeader("Authorization") String authHeader,
                                                @CookieValue(value = "refreshToken", required = false) String refreshToken) {  // 쿠키값이 없으면 null이 반환됨
         log.info("saveUserInfo 접근");
-
-        System.out.println("\n\n\n-----------------------\n");
-        System.out.println("saveUserInfo accessToken : " + authHeader);
-        System.out.println("refreshToken : " + refreshToken);
-        System.out.println("userSingUpDTO\n" + userSingUpDTO.toString());
-        System.out.println("\n-----------------------\n\n\n");
+        Map<String, Object> response = new HashMap<>();
 
         try {
-            Map<String, Object> token = userService.saveUserInfo(userSingUpDTO, authHeader, (refreshToken != null ? refreshToken : ""));
+            response = userService.saveUserInfo(userSingUpDTO, authHeader, (refreshToken != null ? refreshToken : ""));
 
             // 회원 가입 성공
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             //회원 가입 중 오류 발생
             log.error("Error while saving user info : " , e);
-            Map<String, Object> error = new HashMap<>();
-            error.put("success", false);
-            error.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/mypage")
+    public ResponseEntity<Map<String, Object>> getUserInfo(@RequestHeader("Authorization") String authHeader) {
+        log.info("my page 접근");
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            response = userService.getUserInfo(authHeader);
+
+            String success = response.get("success").toString();
+
+            System.out.println("\n\n\n--------------------------\n");
+            System.out.println(success);
+            System.out.println("\n--------------------------\n\n\n");
+
+            if(success.equals("true")) {
+                return ResponseEntity.ok(response);
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            log.error("Error while getting user info : " , e);
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

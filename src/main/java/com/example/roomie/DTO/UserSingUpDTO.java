@@ -1,8 +1,12 @@
 package com.example.roomie.DTO;
 
+import com.example.roomie.Entity.Role;
+import com.example.roomie.Entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.YearMonth;
 
 @NoArgsConstructor
 @Getter
@@ -24,5 +28,18 @@ public class UserSingUpDTO {
     public String toString() {
         return "userId : " + userId + "\nemail : " + email + "\nnickname : " + nickname + "\ngender : " + gender + "\nmainAnimal : " + mainAnimal +
                 "\nbirthDate : " + birthDate + "\nschool : " + school + "\nlocal : " + local + "\nimgUrl : " + imgUrl;
+    }
+
+    // UserSingUpDTO 데이터를 기반으로 User 엔티티를 업데이트하는 메서드
+    public void updateUserEntity(User user, String newRefreshToken) {
+        if (this.nickname != null) user.setNickname(this.nickname);
+        if (this.gender != null) user.setGender(this.gender);
+        if (this.mainAnimal != 0) user.setMainAnimal(this.mainAnimal);
+        if (this.birthDate != null) user.setBirthDate(YearMonth.parse(this.birthDate));
+        if (this.school != null) user.setSchool(this.school);
+        if (this.local != null) user.setLocal(this.local);
+        if (this.imgUrl != null) user.setImgUrl(this.imgUrl);
+        if (newRefreshToken != null) user.setRefreshToken(newRefreshToken);
+        user.setRole(Role.valueOf(this.role));
     }
 }

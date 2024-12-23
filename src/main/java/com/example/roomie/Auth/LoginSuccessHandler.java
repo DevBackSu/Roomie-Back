@@ -1,6 +1,5 @@
 package com.example.roomie.Auth;
 
-import com.example.roomie.DTO.UserDTO;
 import com.example.roomie.Entity.Role;
 import com.example.roomie.Entity.User;
 import com.example.roomie.JWT.JwtService;

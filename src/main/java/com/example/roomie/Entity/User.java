@@ -3,6 +3,7 @@ package com.example.roomie.Entity;
 import com.example.roomie.DTO.UserSingUpDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -45,6 +46,8 @@ public class User {
     private String local;  // 추가 정보 (지역)
 
     @Column
+//    @Builder.Default   // 엔티티 객체 생성 시의 초기값 설정
+    @ColumnDefault("1")  // 테이블 생성 시의 초기값 설정
     private String imgUrl; // 추가 정보 (프로필 이미지)
 
     @Column
@@ -57,7 +60,6 @@ public class User {
     @Column
     private String refreshToken; // JWT 사용 시 발행된 액세스 토큰과 리프레시 토큰 중 리프레시 토큰을 저장함
 
-    @Getter
     @Column
     @Enumerated(EnumType.STRING)
     private Role role;      // 최초 로그인인지 구분하기 위함 (guest - 최초 로그인 / user - 로그인 기록 존재 / admin - 관리자)
@@ -70,5 +72,4 @@ public class User {
     public void updateRefreshToken(String updateRefreshToken) {  // 리프레시 토큰 재발급
         this.refreshToken = updateRefreshToken;
     }
-
 }
