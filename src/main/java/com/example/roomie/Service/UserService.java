@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface UserService {
 
-    Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader, String refreshToken);
+    Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader);
 
     Map<String, Object> getUserInfo(String authHeader);
 }

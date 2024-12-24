@@ -20,15 +20,19 @@ public class UserController implements UserControllerDocs {
 
     private final UserService userService;
 
-    // info DTO 만들어서 가입용 DTO 생성 -> 저장하기
+    /**
+     * 사용자 정보 (mypage 정보) 수정 시 호출
+     * @param userSingUpDTO 사용자 정보 입력 시 필요한 DTO
+     * @param authHeader access token 값
+     * @return response(success, message)
+     */
     @PostMapping("/info")
-    public ResponseEntity<Map<String, Object>> saveUserInfo(@RequestBody UserSingUpDTO userSingUpDTO, @RequestHeader("Authorization") String authHeader,
-                                               @CookieValue(value = "refreshToken", required = false) String refreshToken) {  // 쿠키값이 없으면 null이 반환됨
+    public ResponseEntity<Map<String, Object>> saveUserInfo(@RequestBody UserSingUpDTO userSingUpDTO, @RequestHeader("Authorization") String authHeader) {  // 쿠키값이 없으면 null이 반환됨
         log.info("saveUserInfo 접근");
         Map<String, Object> response = new HashMap<>();
 
         try {
-            response = userService.saveUserInfo(userSingUpDTO, authHeader, (refreshToken != null ? refreshToken : ""));
+            response = userService.saveUserInfo(userSingUpDTO, authHeader);
 
             // 회원 가입 성공
             return ResponseEntity.ok(response);
@@ -41,6 +45,11 @@ public class UserController implements UserControllerDocs {
         }
     }
 
+    /**
+     * 사용자가 MyPage를 호출했을 경우 실행됨
+     * @param authHeader : access token 값
+     * @return response(success, 실패 시 message or 성공 시 userdata)
+     */
     @GetMapping("/mypage")
     public ResponseEntity<Map<String, Object>> getUserInfo(@RequestHeader("Authorization") String authHeader) {
         log.info("my page 접근");
@@ -50,10 +59,6 @@ public class UserController implements UserControllerDocs {
             response = userService.getUserInfo(authHeader);
 
             String success = response.get("success").toString();
-
-            System.out.println("\n\n\n--------------------------\n");
-            System.out.println(success);
-            System.out.println("\n--------------------------\n\n\n");
 
             if(success.equals("true")) {
                 return ResponseEntity.ok(response);

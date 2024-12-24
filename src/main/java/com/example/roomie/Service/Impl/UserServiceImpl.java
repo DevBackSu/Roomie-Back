@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-    public Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader, String refreshToken) {
+    public Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader) {
         Map<String, Object> token = new HashMap<>();
 
         String accessToken = jwtService.extractTokenAccessToken(authHeader);
@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
         // access token 검증
         Long userId = accessTokenToId(accessToken);
         // refresh token 생성 -> token에 추가
+
         String newRefreshToken = jwtService.createRefreshToken();
 
 
@@ -72,6 +73,11 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * access token 검사 후 user id 반환
+     * @param accessToken : access token
+     * @return user_id
+     */
     private Long accessTokenToId(String accessToken) {
         if (!jwtService.isTokenValid(accessToken)) {
             throw new IllegalArgumentException("Invalid Access Token");
