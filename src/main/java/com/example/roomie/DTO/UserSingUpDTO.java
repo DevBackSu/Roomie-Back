@@ -34,6 +34,7 @@ public class UserSingUpDTO {
     public void updateUserEntity(User user, String newRefreshToken) {
         if (this.nickname != null) user.setNickname(this.nickname);
         if (this.gender != null) user.setGender(this.gender);
+        if (this.email != null) user.setEmail(this.email);
         if (this.mainAnimal != 0) user.setMainAnimal(this.mainAnimal);
         if (this.birthDate != null) user.setBirthDate(YearMonth.parse(this.birthDate));
         if (this.school != null) user.setSchool(this.school);
