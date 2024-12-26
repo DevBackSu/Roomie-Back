@@ -66,7 +66,8 @@ public class User {
 
     public String toString() {
         return "id : " + id + "\nnickname : " + nickname + "\ngender : " + gender + "\nbirth_date : " + birthDate + "\nschool : " + school + "\nlocal : " + local +
-                "\nimg : " + imgUrl + "\nemail : " + email + "\nrefreshToken : " + refreshToken + "\nsocialType : " + socialType + "\nsocialToken : " + socialToken;
+                "\nimg : " + imgUrl + "\nemail : " + email + "\nrefreshToken : " + refreshToken + "\nsocialType : " + socialType + "\nsocialToken : " + socialToken
+                + "\nrole : " + role;
     }
 
     public void updateRefreshToken(String updateRefreshToken) {  // 리프레시 토큰 재발급

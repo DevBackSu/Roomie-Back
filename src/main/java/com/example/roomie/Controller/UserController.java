@@ -21,7 +21,8 @@ public class UserController implements UserControllerDocs {
     private final UserService userService;
 
     /**
-     * 사용자 정보 (mypage 정보) 수정 시 호출
+     * 사용자 정보 (mypage 정보) 최초 수정 시 호출
+     * /info는 oauth 후 결과 반환을 위한 api여서 다른 곳에서 사용 시 오류가 발생함
      * @param userSingUpDTO 사용자 정보 입력 시 필요한 DTO
      * @param authHeader access token 값
      * @return response(success, message)
@@ -72,6 +73,20 @@ public class UserController implements UserControllerDocs {
             response.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    /**
+     * 마이 페이지 수정을 위한 API
+     * @param authHeader : access token
+     * @param userSingUpDTO : 사용자가 입력한 값
+     * @return response
+     */
+    @PostMapping("/mypageUpdage")
+    public ResponseEntity<Map<String, Object>> updateUserInfo(@RequestHeader("Authorization") String authHeader, @RequestBody UserSingUpDTO userSingUpDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+
+        return ResponseEntity.ok(response);
     }
 
 }

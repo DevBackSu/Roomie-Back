@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.example.roomie.Entity.Role.GUEST;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -25,24 +27,22 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> token = new HashMap<>();
 
         String accessToken = jwtService.extractTokenAccessToken(authHeader);
+        String newRefreshToken = jwtService.createRefreshToken();
 
         // access token 검증
         Long userId = accessTokenToId(accessToken);
-        // refresh token 생성 -> token에 추가
-
-        String newRefreshToken = jwtService.createRefreshToken();
-
 
         userSingUpDTO.setUserId(userId);
-        userSingUpDTO.setRole("USER");
-        userSingUpDTO.setRefreshToken(newRefreshToken);
 
         // User 객체 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
+        userSingUpDTO.setRefreshToken(newRefreshToken);
+        userSingUpDTO.setRole("USER");
+
         // 필요한 필드만 업데이트
-        userSingUpDTO.updateUserEntity(user, newRefreshToken);
+        userSingUpDTO.updateUserEntity(user);
 
         // 데이터 저장
         userRepository.save(user);
