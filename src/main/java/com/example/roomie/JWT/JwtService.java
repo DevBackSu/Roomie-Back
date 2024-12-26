@@ -158,4 +158,21 @@ public class JwtService {
             return false;
         }
     }
+
+    /**
+     * access token 검사 후 user id 반환
+     * @param accessToken : access token
+     * @return user_id
+     */
+    public Long accessTokenToId(String accessToken) {
+        if (!isTokenValid(accessToken)) {
+            throw new IllegalArgumentException("Invalid Access Token");
+        }
+
+        // access token에서 id값 추출 (Optinal 반환 시 오류 반환)
+        Long userId = extractId(accessToken)
+                .orElseThrow(() -> new IllegalArgumentException("Access token is missing or invalid"));
+
+        return userId;
+    }
 }

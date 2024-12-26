@@ -21,6 +21,29 @@ public class UserController implements UserControllerDocs {
     private final UserService userService;
 
     /**
+     * 사용자 정보 호출 시 사용하는 api
+     * @param authHeader : access token
+     * @return response
+     */
+    @GetMapping("/")
+    public ResponseEntity<Map<String, Object>> findUser(@RequestHeader("Authorization") String authHeader) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+
+            // User service에서 findUser하는 부분 넣기
+
+        } catch (Exception e) {
+            log.error("Error while saving user info : " , e);
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    /**
      * 사용자 정보 (mypage 정보) 최초 수정 시 호출
      * /info는 oauth 후 결과 반환을 위한 api여서 다른 곳에서 사용 시 오류가 발생함
      * @param userSingUpDTO 사용자 정보 입력 시 필요한 DTO
@@ -33,6 +56,7 @@ public class UserController implements UserControllerDocs {
         Map<String, Object> response = new HashMap<>();
 
         try {
+
             response = userService.saveUserInfo(userSingUpDTO, authHeader);
 
             // 회원 가입 성공
@@ -46,47 +70,6 @@ public class UserController implements UserControllerDocs {
         }
     }
 
-    /**
-     * 사용자가 MyPage를 호출했을 경우 실행됨
-     * @param authHeader : access token 값
-     * @return response(success, 실패 시 message or 성공 시 userdata)
-     */
-    @GetMapping("/mypage")
-    public ResponseEntity<Map<String, Object>> getUserInfo(@RequestHeader("Authorization") String authHeader) {
-        log.info("my page 접근");
-        Map<String, Object> response = new HashMap<>();
 
-        try {
-            response = userService.getUserInfo(authHeader);
-
-            String success = response.get("success").toString();
-
-            if(success.equals("true")) {
-                return ResponseEntity.ok(response);
-            }
-            else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-            }
-        } catch (Exception e) {
-            log.error("Error while getting user info : " , e);
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    /**
-     * 마이 페이지 수정을 위한 API
-     * @param authHeader : access token
-     * @param userSingUpDTO : 사용자가 입력한 값
-     * @return response
-     */
-    @PostMapping("/mypageUpdage")
-    public ResponseEntity<Map<String, Object>> updateUserInfo(@RequestHeader("Authorization") String authHeader, @RequestBody UserSingUpDTO userSingUpDTO) {
-        Map<String, Object> response = new HashMap<>();
-
-
-        return ResponseEntity.ok(response);
-    }
 
 }
