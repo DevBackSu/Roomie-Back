@@ -52,7 +52,6 @@ public class UserPageDTO {
         if (this.school != null) user.setSchool(this.school);
         if (this.local != null) user.setLocal(this.local);
         if (this.imgUrl != null) user.setImgUrl(this.imgUrl);
-        if (this.refreshToken != null) user.setRefreshToken(this.refreshToken);
         user.setRole(Role.valueOf(this.role));
     }
 }

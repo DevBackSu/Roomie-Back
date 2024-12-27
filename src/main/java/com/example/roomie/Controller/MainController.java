@@ -1,8 +1,11 @@
 package com.example.roomie.Controller;
 
 import com.example.roomie.DTO.RankDTO;
+import com.example.roomie.Service.MainService;
 import com.example.roomie.SwaggerForm.MainControllerDocs;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,25 +17,18 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/main")
 public class MainController implements MainControllerDocs {
-
-//    @GetMapping("/user")
-//    public UserDTO getUser() {
-//        UserDTO data = new UserDTO();
-//        return data;
-//    }
-//
-//    @GetMapping("/other") // 친구 관계의 사용자 3명 정도를 반환
-//    public Map<String, UserDTO> getOther() {
-//        Map<String, UserDTO> other = new HashMap<>();
-//        return other;
-//    }
+    private final MainService mainService;
 
     @GetMapping("/statistics") // 메인 화면 중 종달새/올빼미 통계값 반환
-    public Map<String, Integer> getStatistics() {
-        Map<String, Integer> statistics = new HashMap<>();
-        statistics.put("새", 2); // 종달새 count 값
-        statistics.put("부엉이", 2); // 올빼미 count 값
-        return statistics;
+    public ResponseEntity<Map<String, Object>> getStatistics() {
+        Map<String, Object> statistics = new HashMap<>();
+        try {
+            statistics = mainService.getStatistics();
+            return ResponseEntity.ok(statistics);
+        } catch (Exception e) {
+            statistics.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(statistics);
+        }
     }
 
     @GetMapping("/Crank") // 메인 화면 중 특징 순위 반환

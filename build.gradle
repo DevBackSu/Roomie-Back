@@ -33,7 +33,10 @@ dependencies {
 	implementation 'com.auth0:java-jwt:4.4.0'  // jwt 서비스 생성을 위해 사용하는 오픈 소스 라이브러리
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'io.projectreactor:reactor-test'
+
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0' // 스웨거
+	implementation 'org.springdoc:springdoc-openapi-core:2.2.0'
+
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // OAuth2 클라 사용을 위한 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-security' // 시큐리티
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4' // properties 암호화에 사용하는 암/복호화 라이브러리 (https://green-bin.tistory.com/30)

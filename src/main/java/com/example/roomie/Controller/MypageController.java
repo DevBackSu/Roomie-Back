@@ -75,6 +75,5 @@ public class MypageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
 
-        return ResponseEntity.ok(response);
     }
 }

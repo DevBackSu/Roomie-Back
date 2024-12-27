@@ -1,7 +1,12 @@
 package com.example.roomie.SwaggerForm;
 
 import com.example.roomie.DTO.RankDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
@@ -19,8 +24,12 @@ public interface MainControllerDocs {
 //    // 친구 관계의 사용자 3명 정도를 반환
 //    public Map<String, UserDTO> getOther();
 
-    // 메인 화면 중 종달새/올빼미 통계값 반환
-    public Map<String, Integer> getStatistics();
+    @Operation(summary = "메인 화면 종달새/올빼미 통계값 반환", description = "메인 화면에서 종달새/올빼미 통계 데이터를 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "반환 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    ResponseEntity<Map<String, Object>> getStatistics();
 
     // 메인 화면 중 특징 순위 반환
     public Map<String, RankDTO> getCrank();
