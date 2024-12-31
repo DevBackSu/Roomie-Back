@@ -43,7 +43,14 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            System.out.println("\n\n\n--------------------------\n");
+            System.out.println(oAuth2User.getEmail());
+            System.out.println(oAuth2User.getName());
+            System.out.println(oAuth2User.getAttributes());
+            System.out.println(oAuth2User.getSocialToken());
+            System.out.println("\n--------------------------\n\n\n");
             Optional<User> user = userRepository.findByEmail(oAuth2User.getEmail());
+//            Optional<User> user = userRepository.findBySocialToken(oAuth2User.getSocialToken());
 
             if (user.isEmpty()) {
                 log.info("일치하는 사용자가 없습니다.");
