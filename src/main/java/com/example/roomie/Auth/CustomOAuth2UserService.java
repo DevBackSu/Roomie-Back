@@ -53,6 +53,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         User createdUser = getUser(extractAttributes, socialType); // getUser 메소드로 User 객체 생성 후 반환
 
+        System.out.println("\n\n\n--------------------------\n");
+        System.out.println("CustomOAuth2USerService");
+        System.out.println(createdUser.toString());
+        System.out.println("\n--------------------------\n\n\n");
+
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(createdUser.getRole().getKey())),
                 attribute,
@@ -63,6 +68,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 createdUser.getSocialToken()
         );
     }
+
     private SocialType getSocialType(String registrationId) {
         if(NAVER.equals(registrationId)) {
             return SocialType.Naver;

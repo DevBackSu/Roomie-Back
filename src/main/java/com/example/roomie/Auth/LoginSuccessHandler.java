@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -44,13 +45,15 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
             System.out.println("\n\n\n--------------------------\n");
+            System.out.println("login success handler");
             System.out.println(oAuth2User.getEmail());
             System.out.println(oAuth2User.getName());
             System.out.println(oAuth2User.getAttributes());
             System.out.println(oAuth2User.getSocialToken());
+            System.out.println(oAuth2User.getRole());
             System.out.println("\n--------------------------\n\n\n");
-            Optional<User> user = userRepository.findByEmail(oAuth2User.getEmail());
-//            Optional<User> user = userRepository.findBySocialToken(oAuth2User.getSocialToken());
+//            Optional<User> user = userRepository.findByEmail(oAuth2User.getEmail());
+            Optional<User> user = userRepository.findBySocialToken(oAuth2User.getSocialToken());
 
             if (user.isEmpty()) {
                 log.info("일치하는 사용자가 없습니다.");
@@ -59,12 +62,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             }
 
             User u = user.get();
+//            oAuth2User.setRole(u.getRole());
 
             // 사용자의 Role이 Guest면 처음 요청한 사용자이기 때문에 회원가입 페이지로 리다이렉트 필요
             if (oAuth2User.getRole() == Role.GUEST) {
                 handleGuestLogin(response, u);
             } else {
-                handleLgoin(request, response, u);
+                handleLogin(request, response, u);
             }
         } catch (Exception e) {
             log.info("LoginSuccessHandler에서 오류 발생");
@@ -84,6 +88,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String url = UriComponentsBuilder.fromHttpUrl("http://localhost:3000/oauth/callback")
                 .queryParam("accessToken", URLEncoder.encode(accessToken, StandardCharsets.UTF_8))
+                .queryParam("role", u.getRole().toString())
                 .toUriString();
         response.sendRedirect(url);
 
@@ -91,7 +96,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("Guest 사용자 로그인 처리 완료");
     }
 
-    private void handleLgoin(HttpServletRequest request, HttpServletResponse response, User u) throws IOException {
+    private void handleLogin(HttpServletRequest request, HttpServletResponse response, User u) throws IOException {
         Long user_id = u.getId();
         String accessToken;
         String refreshToken = null;
@@ -120,72 +125,41 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             accessToken = jwtService.createAccessToken(user_id);
             jwtService.updateRefreshToken(user_id, refreshToken);
         }
-        // 쿠키에 refreshToken 설정
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true); // JavaScript에서 접근 금지
-//        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송 (개발 환경에서는 false로 설정 가능)
-        refreshTokenCookie.setSecure(false); // HTTPS에서만 전송 (개발 환경에서는 false로 설정 가능)
-        refreshTokenCookie.setPath("/"); // 쿠키가 모든 경로에서 유효
-        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 쿠키 만료 기간: 14일
+//        // 쿠키에 refreshToken 설정
+//        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+//        refreshTokenCookie.setHttpOnly(true); // JavaScript에서 접근 금지
+////        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송 (개발 환경에서는 false로 설정 가능)
+//        refreshTokenCookie.setSecure(false); // HTTPS에서만 전송 (개발 환경에서는 false로 설정 가능)
+//        refreshTokenCookie.setPath("/"); // 쿠키가 모든 경로에서 유효
+//        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 쿠키 만료 기간: 14일
+//
+//        response.addCookie(refreshTokenCookie); // 응답에 쿠키 추가
 
-        response.addCookie(refreshTokenCookie); // 응답에 쿠키 추가
+        // `Set-Cookie` 헤더에 refreshToken 설정
+//        String cookie = String.format(
+//                "refreshToken=%s; Max-Age=%d; Path=/; HttpOnly; Secure",
+//                refreshToken,
+//                14 * 24 * 60 * 60 // 14일
+//        );
+//        response.addHeader("Set-Cookie", cookie);
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .maxAge(1209600000)
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
+
+        response.setHeader("Set-Cookie", cookie.toString());
 
         // 액세스 토큰을 URL에 포함하여 프론트엔드로 전달
         String url = String.format(
-                "http://localhost:3000/oauth/callback?accessToken=%s",
-                URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
+                "http://localhost:3000/oauth/callback?accessToken=%s&role=%s",
+                URLEncoder.encode(accessToken, StandardCharsets.UTF_8),
+                URLEncoder.encode(u.getRole().name(), StandardCharsets.UTF_8)
         );
 
         response.sendRedirect(url);
         log.info("Login 처리 완료: AccessToken과 RefreshToken 전달");
     }
-
-
-    /**
-     * 소셜 로그인 시에도 무조건 토큰을 생성하지 말고 jwt 인증 필터처럼 refreshToken 유/무에 따라서 다르게 처리하기!
-     * - refresh가 있고 만료 전인 경우
-     * - access가 있는지 확인하고 access가 만료되었으면 재발급 / 아니면 둘 다 만료 전이기 때문에 상관 X
-     * - refresh가 없거나 만료된 경우
-     * - 재로그인
-     *
-     * @param response
-     * @param oAuth2User
-     * @throws IOException
-     */
-//    private void loginSuccess(HttpServletRequest request, HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
-//        Optional<User> user = userRepository.findByEmail(oAuth2User.getEmail());
-//        Long userId = user.get().getId();
-//
-//        if (user.isEmpty()) {
-//            log.info("일치하는 사용자가 없습니다.");
-//            throw new IOException("일치하는 사용자가 없습니다.");
-//        }
-////         refresh token이 있는지 확인하기 위해 Request 헤더에서 추출해 검사
-//        Optional<String> opToken = jwtService.extractRefreshToken(request);
-//
-//        // 추출한 opToken에 값이 존재하는지 확인
-//        if (opToken.isPresent()) {
-//            // 값이 존재할 경우 아래 진행
-//            String refreshToken = opToken.get();
-//
-//            // 유효 여부 확인 -> refresh token이 유효하면 access token 재발급
-//            if (jwtService.isTokenValid(refreshToken)) {
-//                String accessToken = jwtService.createAccessToken(userId);
-//                jwtService.sendAccessToken(response, accessToken);
-//            }
-//            // 유효하지 않다면 -> 둘 다 재발급
-//            else {
-//                String newRefreshToken = jwtService.createRefreshToken();
-//                String accessToken = jwtService.createAccessToken(userId);
-//
-//                jwtService.updateRefreshToken(userId, newRefreshToken);
-//
-//                jwtService.sendAllToken(response, accessToken, newRefreshToken);
-//            }
-//        }
-//        // 값이 존재하지 않을 경우
-//        else {
-//            // 다른 무언가가 필요한가?
-//        }
-//    }
 }

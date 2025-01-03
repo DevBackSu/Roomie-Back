@@ -5,7 +5,9 @@ import com.example.roomie.Service.UserService;
 import com.example.roomie.SwaggerForm.UserControllerDocs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,13 +56,29 @@ public class UserController implements UserControllerDocs {
     public ResponseEntity<Map<String, Object>> saveUserInfo(@RequestBody UserSingUpDTO userSingUpDTO, @RequestHeader("Authorization") String authHeader) {  // 쿠키값이 없으면 null이 반환됨
         log.info("saveUserInfo 접근");
         Map<String, Object> response = new HashMap<>();
+        HttpHeaders headers = new HttpHeaders();
 
         try {
 
             response = userService.saveUserInfo(userSingUpDTO, authHeader);
 
+            ResponseCookie cookie = ResponseCookie.from("refreshToken", response.get("refreshToken").toString())
+                    .maxAge(1209600000)
+                    .path("/")
+                    .secure(true)
+                    .sameSite("None")
+                    .httpOnly(true)
+                    .build();
+
+//            response.setHeader("Set-Cookie", cookie.toString());
+            headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+
+            response.remove("refreshToken");
+
             // 회원 가입 성공
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(response);
         } catch (Exception e) {
             //회원 가입 중 오류 발생
             log.error("Error while saving user info : " , e);
