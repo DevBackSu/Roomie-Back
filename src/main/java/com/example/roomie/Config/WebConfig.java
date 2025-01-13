@@ -18,9 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000") // React 서버 URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("Authorization", "Content-Type") // Authorization 헤더 허용
-//                .exposedHeaders("Auth", "Refresh") // React에서 읽을 수 있는 헤더
-                .exposedHeaders("Set-Cookie") // Set-Cookie 헤더 노출
+                .allowedHeaders("Authorization", "Content-Type", "refresh") // 허용할 헤더
+                .exposedHeaders("refresh", "Authorization", "Content-Type") // 클라에서 읽을 수 있는 헤더
                 .allowCredentials(true);
     }
 

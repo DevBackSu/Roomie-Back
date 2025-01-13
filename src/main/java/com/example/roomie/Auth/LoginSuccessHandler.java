@@ -92,7 +92,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 .toUriString();
         response.sendRedirect(url);
 
-        log.info("Redirect URL : " + url);
+        log.info("Redirect URL : {}", url);
         log.info("Guest 사용자 로그인 처리 완료");
     }
 
@@ -128,7 +128,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 //        // 쿠키에 refreshToken 설정
 //        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
 //        refreshTokenCookie.setHttpOnly(true); // JavaScript에서 접근 금지
-////        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송 (개발 환경에서는 false로 설정 가능)
+//        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송 (개발 환경에서는 false로 설정 가능)
 //        refreshTokenCookie.setSecure(false); // HTTPS에서만 전송 (개발 환경에서는 false로 설정 가능)
 //        refreshTokenCookie.setPath("/"); // 쿠키가 모든 경로에서 유효
 //        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 쿠키 만료 기간: 14일
@@ -142,15 +142,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 //                14 * 24 * 60 * 60 // 14일
 //        );
 //        response.addHeader("Set-Cookie", cookie);
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
-                .maxAge(1209600000)
-                .path("/")
-                .secure(true)
-                .sameSite("None")
-                .httpOnly(true)
-                .build();
 
-        response.setHeader("Set-Cookie", cookie.toString());
+        response.setHeader("refresh", refreshToken);
 
         // 액세스 토큰을 URL에 포함하여 프론트엔드로 전달
         String url = String.format(
