@@ -70,7 +70,6 @@ public class UserController implements UserControllerDocs {
                     .httpOnly(true)
                     .build();
 
-//            response.setHeader("Set-Cookie", cookie.toString());
             headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
 
             response.remove("refreshToken");
@@ -88,6 +87,10 @@ public class UserController implements UserControllerDocs {
         }
     }
 
-
+    @PostMapping("/refreshCookie")
+    public ResponseEntity<Map<String, Object>> refreshCookie(@RequestBody UserSingUpDTO userSingUpDTO, @RequestHeader("Authorization") String authHeader) {  // 쿠키값이 없으면 null이 반환됨
+        Map<String, Object> response = new HashMap<>();
+        return ResponseEntity.ok(response);
+    }
 
 }

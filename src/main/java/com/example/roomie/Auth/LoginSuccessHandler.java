@@ -136,14 +136,16 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 //        response.addCookie(refreshTokenCookie); // 응답에 쿠키 추가
 
         // `Set-Cookie` 헤더에 refreshToken 설정
-//        String cookie = String.format(
-//                "refreshToken=%s; Max-Age=%d; Path=/; HttpOnly; Secure",
-//                refreshToken,
-//                14 * 24 * 60 * 60 // 14일
-//        );
-//        response.addHeader("Set-Cookie", cookie);
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .maxAge(14 * 24 * 60 * 60)
+                .path("/")
+                .secure(true)
+                .sameSite("None") // 동일 사이트와 크로스 사이트에 모두 쿠키 전송이 가능하도록 하는 옵션
+                .httpOnly(true)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
 
-        response.setHeader("refresh", refreshToken);
+//        response.setHeader("refresh", refreshToken);
 
         // 액세스 토큰을 URL에 포함하여 프론트엔드로 전달
         String url = String.format(
