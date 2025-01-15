@@ -23,10 +23,14 @@ public class MyPageServiceImpl implements MyPageService {
     public Map<String, Object> getUserInfo(String authHeader) {
         Map<String, Object> param = new HashMap<>();
 
-        String accessToken = jwtService.extractTokenAccessToken(authHeader);
+        String accessToken = jwtService.extractTokenAccessToken(authHeader);  // access token 추출
+        Long userId = jwtService.accessTokenToId(accessToken); // access token 검증
 
-        // access token 검증 및 id 반환
-        Long userId = jwtService.accessTokenToId(accessToken);
+        if(userId == -1) {  // access token이 유효하지 않을 경우
+            param.put("success", false);
+            param.put("message", "Invalid access token");
+            return param;
+        }
 
         Optional<User> user = userRepository.findById(userId);
 
@@ -41,10 +45,14 @@ public class MyPageServiceImpl implements MyPageService {
     public Map<String, Object> saveUserInfo(UserPageDTO userSingUpDTO, String authHeader) {
         Map<String, Object> param = new HashMap<>();
 
-        String accessToken = jwtService.extractTokenAccessToken(authHeader);
+        String accessToken = jwtService.extractTokenAccessToken(authHeader);  // access token 추출
+        Long userId = jwtService.accessTokenToId(accessToken); // access token 검증
 
-        // access token 검증
-        Long userId = jwtService.accessTokenToId(accessToken);
+        if(userId == -1) {  // access token이 유효하지 않을 경우
+            param.put("success", false);
+            param.put("message", "Invalid access token");
+            return param;
+        }
 
         // User 객체 조회
         User user = userRepository.findById(userId)

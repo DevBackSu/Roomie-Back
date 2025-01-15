@@ -166,7 +166,7 @@ public class JwtService {
      */
     public Long accessTokenToId(String accessToken) {
         if (!isTokenValid(accessToken)) {
-            throw new IllegalArgumentException("Invalid Access Token");
+            return (long) -1;
         }
 
         // access token에서 id값 추출 (Optinal 반환 시 오류 반환)

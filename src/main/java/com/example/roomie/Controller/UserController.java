@@ -3,6 +3,8 @@ package com.example.roomie.Controller;
 import com.example.roomie.DTO.UserSingUpDTO;
 import com.example.roomie.Service.UserService;
 import com.example.roomie.SwaggerForm.UserControllerDocs;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -62,22 +64,34 @@ public class UserController implements UserControllerDocs {
 
             response = userService.saveUserInfo(userSingUpDTO, authHeader);
 
-            ResponseCookie cookie = ResponseCookie.from("refreshToken", response.get("refreshToken").toString())
-                    .maxAge(1209600000)
-                    .path("/")
-                    .secure(true)
-                    .sameSite("None")
-                    .httpOnly(true)
-                    .build();
+            String success = response.get("success").toString();
 
-            headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+            if(success.equals("true")) {
+                ResponseCookie cookie = ResponseCookie.from("refreshToken", response.get("refreshToken").toString())
+                        .maxAge(1209600000)
+                        .path("/")
+                        .secure(true)
+                        .sameSite("None")
+                        .httpOnly(true)
+                        .build();
 
-            response.remove("refreshToken");
+                headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
 
-            // 회원 가입 성공
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(response);
+                response.remove("refreshToken");
+
+                // 회원 가입 성공
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(response);
+            }
+            else if(success.equals("false")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+
+
         } catch (Exception e) {
             //회원 가입 중 오류 발생
             log.error("Error while saving user info : " , e);
@@ -87,10 +101,6 @@ public class UserController implements UserControllerDocs {
         }
     }
 
-    @PostMapping("/refreshCookie")
-    public ResponseEntity<Map<String, Object>> refreshCookie(@RequestBody UserSingUpDTO userSingUpDTO, @RequestHeader("Authorization") String authHeader) {  // 쿠키값이 없으면 null이 반환됨
-        Map<String, Object> response = new HashMap<>();
-        return ResponseEntity.ok(response);
-    }
+
 
 }

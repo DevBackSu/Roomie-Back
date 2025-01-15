@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -62,7 +63,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             }
 
             User u = user.get();
-//            oAuth2User.setRole(u.getRole());
 
             // 사용자의 Role이 Guest면 처음 요청한 사용자이기 때문에 회원가입 페이지로 리다이렉트 필요
             if (oAuth2User.getRole() == Role.GUEST) {
@@ -79,10 +79,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 
     private void handleGuestLogin(HttpServletResponse response, User u) throws IOException {
-
-        System.out.println("\n\n\n-----------------------\n");
-        System.out.println(u.toString());
-        System.out.println("\n-----------------------\n\n\n");
+        System.out.println("\n\n\n-------------------------------\n");
+        System.out.println("login success handler - guest");
+        System.out.println("\n-------------------------------\n\n\n");
 
         String accessToken = jwtService.createAccessToken(u.getId());
 
@@ -97,6 +96,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private void handleLogin(HttpServletRequest request, HttpServletResponse response, User u) throws IOException {
+        System.out.println("\n\n\n-------------------------------\n");
+        System.out.println("login success handler - user");
+        System.out.println("\n-------------------------------\n\n\n");
+
         Long user_id = u.getId();
         String accessToken;
         String refreshToken = null;
@@ -125,17 +128,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             accessToken = jwtService.createAccessToken(user_id);
             jwtService.updateRefreshToken(user_id, refreshToken);
         }
-//        // 쿠키에 refreshToken 설정
-//        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-//        refreshTokenCookie.setHttpOnly(true); // JavaScript에서 접근 금지
-//        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송 (개발 환경에서는 false로 설정 가능)
-//        refreshTokenCookie.setSecure(false); // HTTPS에서만 전송 (개발 환경에서는 false로 설정 가능)
-//        refreshTokenCookie.setPath("/"); // 쿠키가 모든 경로에서 유효
-//        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 쿠키 만료 기간: 14일
-//
-//        response.addCookie(refreshTokenCookie); // 응답에 쿠키 추가
 
-        // `Set-Cookie` 헤더에 refreshToken 설정
+        // 쿠키에 refreshToken이라는 이름으로 세팅
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                 .maxAge(14 * 24 * 60 * 60)
                 .path("/")
@@ -143,9 +137,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 .sameSite("None") // 동일 사이트와 크로스 사이트에 모두 쿠키 전송이 가능하도록 하는 옵션
                 .httpOnly(true)
                 .build();
-        response.addHeader("Set-Cookie", cookie.toString());
 
-//        response.setHeader("refresh", refreshToken);
+        response.setHeader("Set-Cookie", cookie.toString());
 
         // 액세스 토큰을 URL에 포함하여 프론트엔드로 전달
         String url = String.format(

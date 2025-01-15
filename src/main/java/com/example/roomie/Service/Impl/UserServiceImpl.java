@@ -23,14 +23,30 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
+    /**
+     * 사용자의 정보를 수정할 때 사용하는 메소드
+     * 사용자의 정보가 업데이트 됨 (회원 정보 수정 - 회원가입)
+     * @param userSingUpDTO
+     * @param authHeader
+     * @return
+     */
     public Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader) {
+        System.out.println("\n\n\n-------------------------------\n");
+        System.out.println("사용자 정보 수정 메소드 진입");
+        System.out.println("\n-------------------------------\n\n\n");
+
         Map<String, Object> token = new HashMap<>();
 
-        String accessToken = jwtService.extractTokenAccessToken(authHeader);
-        String newRefreshToken = jwtService.createRefreshToken();
+        String accessToken = jwtService.extractTokenAccessToken(authHeader);  // access token 추출
+        Long userId = jwtService.accessTokenToId(accessToken); // access token 검증
 
-        // access token 검증
-        Long userId = jwtService.accessTokenToId(accessToken);
+        if(userId == -1) {  // access token이 유효하지 않을 경우
+            token.put("success", false);
+            token.put("message", "Invalid access token");
+            return token;
+        }
+
+        String newRefreshToken = jwtService.createRefreshToken();             // refresh token 생성
 
         userSingUpDTO.setUserId(userId);
 
