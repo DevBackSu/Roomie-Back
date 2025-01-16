@@ -32,14 +32,25 @@ public class MainController implements MainControllerDocs {
     }
 
     @GetMapping("/Crank") // 메인 화면 중 특징 순위 반환
-    public Map<String, RankDTO> getCrank() {
-        Map<String, RankDTO> crank = new HashMap<>();
-        return crank;
+    public  ResponseEntity<Map<String, Object>> getCrank() {
+        Map<String, Object> crank = new HashMap<>();
+        try {
+            crank = mainService.getCrank();
+            return ResponseEntity.ok(crank);
+        } catch (Exception e) {
+            crank.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(crank);
+        }
     }
 
     @GetMapping("/Lrank") // 메인 화면 중 지역 순위 반환
-    public Map<String, RankDTO> getLrank() {
-        Map<String, RankDTO> Lrank = new HashMap<>();
-        return Lrank;
+    public  ResponseEntity<Map<String, Object>> getLrank() {
+        Map<String, Object> Lrank = new HashMap<>();
+        try {
+            return ResponseEntity.ok(Lrank);
+        } catch (Exception e) {
+            Lrank.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Lrank);
+        }
     }
 }

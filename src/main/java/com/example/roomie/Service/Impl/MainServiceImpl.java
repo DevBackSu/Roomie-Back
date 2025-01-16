@@ -1,5 +1,6 @@
 package com.example.roomie.Service.Impl;
 
+import com.example.roomie.DTO.RankDTO;
 import com.example.roomie.Entity.User;
 import com.example.roomie.Repository.MainRepository;
 import com.example.roomie.Service.MainService;
@@ -42,6 +43,18 @@ public class MainServiceImpl implements MainService {
             response.put("2", "0");
         }
 
+        return response;
+    }
+
+    public Map<String, Object> getCrank() {
+        Map<String, Object> response = new HashMap<>();
+        List<RankDTO> rank = mainRepository.findCrank();
+
+        System.out.println("\n\n\n-------------------------------\n");
+        System.out.println(rank.toString());
+        System.out.println("\n-------------------------------\n\n\n");
+
+        response.put("rank", rank);
         return response;
     }
 }

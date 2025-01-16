@@ -73,4 +73,5 @@ public class User {
     public void updateRefreshToken(String updateRefreshToken) {  // 리프레시 토큰 재발급
         this.refreshToken = updateRefreshToken;
     }
+
 }

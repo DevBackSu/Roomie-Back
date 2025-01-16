@@ -1,7 +1,6 @@
 package com.example.roomie.Service.Impl;
 
 import com.example.roomie.DTO.UserPageDTO;
-import com.example.roomie.DTO.UserSingUpDTO;
 import com.example.roomie.Entity.User;
 import com.example.roomie.JWT.JwtService;
 import com.example.roomie.Repository.UserRepository;
@@ -17,59 +16,63 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MyPageServiceImpl implements MyPageService {
 
+    private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token";
+    private static final String USER_NOT_FOUND_MSG = "User not found with id: ";
+
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
+    private Map<String, Object> createErrorResponse(String message) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", message);
+        return response;
+    }
+
+    private Map<String, Object> createSuccessResponse(Object data) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("data", data);
+        return response;
+    }
+
+    private Long validateAccessToken(String authHeader) {
+        String accessToken = jwtService.extractTokenAccessToken(authHeader);
+        return jwtService.accessTokenToId(accessToken);
+    }
+
+    @Override
     public Map<String, Object> getUserInfo(String authHeader) {
-        Map<String, Object> param = new HashMap<>();
-
-        String accessToken = jwtService.extractTokenAccessToken(authHeader);  // access token 추출
-        Long userId = jwtService.accessTokenToId(accessToken); // access token 검증
-
-        if(userId == -1) {  // access token이 유효하지 않을 경우
-            param.put("success", false);
-            param.put("message", "Invalid access token");
-            return param;
+        Long userId = validateAccessToken(authHeader);
+        if (userId == -1) {
+            return createErrorResponse(INVALID_ACCESS_TOKEN_MSG);
         }
 
         Optional<User> user = userRepository.findById(userId);
-
-        UserPageDTO userPageDTO = UserPageDTO.fromEntity(user.get());
-
-        param.put("success", true);
-        param.put("userData", userPageDTO);
-
-        return param;
-    }
-
-    public Map<String, Object> saveUserInfo(UserPageDTO userSingUpDTO, String authHeader) {
-        Map<String, Object> param = new HashMap<>();
-
-        String accessToken = jwtService.extractTokenAccessToken(authHeader);  // access token 추출
-        Long userId = jwtService.accessTokenToId(accessToken); // access token 검증
-
-        if(userId == -1) {  // access token이 유효하지 않을 경우
-            param.put("success", false);
-            param.put("message", "Invalid access token");
-            return param;
+        if (!user.isPresent()) {
+            return createErrorResponse(USER_NOT_FOUND_MSG + userId);
         }
 
-        // User 객체 조회
+        UserPageDTO userPageDTO = UserPageDTO.fromEntity(user.get());
+        return createSuccessResponse(userPageDTO);
+    }
+
+    @Override
+    public Map<String, Object> saveUserInfo(UserPageDTO userPageDTO, String authHeader) {
+        Long userId = validateAccessToken(authHeader);
+        if (userId == -1) {
+            return createErrorResponse(INVALID_ACCESS_TOKEN_MSG);
+        }
+
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND_MSG + userId));
 
-        userSingUpDTO.setRole("USER");
-        userSingUpDTO.setUserId(userId);
+        // DTO를 User 엔티티로 변환하여 업데이트
+        userPageDTO.setRole("USER");
+        userPageDTO.setUserId(userId);
+        userPageDTO.updateUserEntity(user);
 
-        // 필요한 필드만 업데이트
-        userSingUpDTO.updateUserEntity(user);
-
-        // 데이터 저장
         userRepository.save(user);
-
-        param.put("success", true);
-        param.put("accessToken", accessToken);
-
-        return param;
+        return createSuccessResponse(userId);
     }
 }
