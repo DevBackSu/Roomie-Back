@@ -46,15 +46,27 @@ public class MainServiceImpl implements MainService {
         return response;
     }
 
-    public Map<String, Object> getCrank() {
-        Map<String, Object> response = new HashMap<>();
-        List<RankDTO> rank = mainRepository.findCrank();
+//    public Map<String, Object> getCrank() {
+//        Map<String, Object> response = new HashMap<>();
+//
+//    // 1~5순위를 직접 조회하든 각각 조회해서 합치든 해야 할 듯
+//
+//        System.out.println("\n\n\n-------------------------------\n");
+//        System.out.println(rank.toString());
+//        System.out.println("\n-------------------------------\n\n\n");
+//
+//        response.put("rank", rank);
+//        return response;
+//    }
+
+    public List<String> getLrank() {
+        List<String> rank = mainRepository.findLrank();
 
         System.out.println("\n\n\n-------------------------------\n");
-        System.out.println(rank.toString());
+        for (String s : rank) {
+            System.out.println(s);
+        }
         System.out.println("\n-------------------------------\n\n\n");
-
-        response.put("rank", rank);
-        return response;
+        return rank;
     }
 }

@@ -2,17 +2,19 @@ package com.example.roomie.DTO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class RankDTO { // 랭킹 반환에 사용하는 DTO
 
-    private List<String> rank;   // 1순위
+    private String local;
 
-    @Override
+
     public String toString() {
-        return "RankDTO [rank=" + rank + "]";
+        return local;
     }
 }
