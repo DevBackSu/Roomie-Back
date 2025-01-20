@@ -67,6 +67,7 @@ public class MainServiceImpl implements MainService {
             System.out.println(s);
         }
         System.out.println("\n-------------------------------\n\n\n");
+
         return rank;
     }
 }

@@ -57,9 +57,6 @@ public class MainController implements MainControllerDocs {
             }
             System.out.println("\n-------------------------------\n\n\n");
 
-            if(localRank.isEmpty()) {
-                localRank.add("아직 순위가 존재하지 않아요");
-            }
             Lrank.put("rank", localRank);
             // 만약 Lrank가 null일 때는 다른 return주기
             return ResponseEntity.ok(Lrank);

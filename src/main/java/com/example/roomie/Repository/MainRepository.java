@@ -13,7 +13,7 @@ public interface MainRepository  extends JpaRepository<User, Long> {
     @Query("SELECT u.mainAnimal FROM User u")
     List<Integer> findMainAnimal();
 
-    @Query("select u.local from User u group by u.local order by count(*) desc limit 5")
+    @Query(value = "select u.local from User u group by u.local order by count(*) desc limit 5")
     List<String> findLrank();
 }
 

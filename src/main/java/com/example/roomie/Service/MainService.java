@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface MainService {
-    public Map<String, Object> getStatistics();
+    Map<String, Object> getStatistics();
 //    public Map<String, Object> getCrank();
     List<String> getLrank();
 }
