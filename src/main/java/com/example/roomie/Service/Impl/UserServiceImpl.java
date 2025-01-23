@@ -31,9 +31,6 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     public Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader) {
-        System.out.println("\n\n\n-------------------------------\n");
-        System.out.println("사용자 정보 수정 메소드 진입");
-        System.out.println("\n-------------------------------\n\n\n");
 
         Map<String, Object> token = new HashMap<>();
 
@@ -67,6 +64,37 @@ public class UserServiceImpl implements UserService {
         token.put("refreshToken", newRefreshToken);
         token.put("accessToken", accessToken);
 
+        return token;
+    }
+
+    /**
+     * 사용자 탈퇴 처리 -> del_yn 컬럼의 값을 Y로 변경
+     * @param authHeader : access token 값
+     * @return token
+     */
+    public Map<String, Object> deleteUser(String authHeader) {
+        Map<String, Object> token = new HashMap<>();
+
+        String accessToken = jwtService.extractTokenAccessToken(authHeader);
+        Long userId = jwtService.accessTokenToId(accessToken);
+
+        if(userId == -1) {
+            token.put("success", false);
+            token.put("message", "Invalid access token");
+            return token;
+        }
+
+        // 값 삭제 ->
+//        userRepository.deleteById(userId);
+        int result = userRepository.updateUserDelYn(userId);
+
+        if (result > 0) {
+            token.put("success", true);
+            token.put("accessToken", null);
+        } else {
+            token.put("success", false);
+            token.put("accessToken", accessToken);
+        }
         return token;
     }
 

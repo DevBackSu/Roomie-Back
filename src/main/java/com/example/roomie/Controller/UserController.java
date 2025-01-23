@@ -101,6 +101,25 @@ public class UserController implements UserControllerDocs {
         }
     }
 
+    /**
+     * 사용자 정보 삭제
+     * @param authHeader access token 값
+     * @return response(success, message)
+     */
+    @PostMapping("/delete")
+    public ResponseEntity<Map<String, Object>> deleteUserInfo(@RequestHeader("Authorization") String authHeader) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            response = userService.deleteUser(authHeader);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            log.error("Error while saving user info : " , e);
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
 
 }

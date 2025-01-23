@@ -7,4 +7,6 @@ import java.util.Map;
 public interface UserService {
 
     Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader);
+
+    Map<String, Object> deleteUser(String authHeader);
 }

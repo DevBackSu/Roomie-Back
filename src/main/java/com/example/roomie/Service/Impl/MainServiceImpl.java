@@ -62,12 +62,6 @@ public class MainServiceImpl implements MainService {
     public List<String> getLrank() {
         List<String> rank = mainRepository.findLrank();
 
-        System.out.println("\n\n\n-------------------------------\n");
-        for (String s : rank) {
-            System.out.println(s);
-        }
-        System.out.println("\n-------------------------------\n\n\n");
-
         return rank;
     }
 }
