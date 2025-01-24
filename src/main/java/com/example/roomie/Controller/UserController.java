@@ -109,10 +109,25 @@ public class UserController implements UserControllerDocs {
     @PostMapping("/delete")
     public ResponseEntity<Map<String, Object>> deleteUserInfo(@RequestHeader("Authorization") String authHeader) {
         Map<String, Object> response = new HashMap<>();
+        HttpHeaders headers = new HttpHeaders();
+
         try {
             response = userService.deleteUser(authHeader);
 
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            ResponseCookie cookie = ResponseCookie.from("refreshToken", null)
+                    .maxAge(0)
+                    .path("/")
+                    .secure(true)
+                    .sameSite("None")
+                    .httpOnly(true)
+                    .build();
+
+            headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(response);
+
         } catch (Exception e) {
             log.error("Error while saving user info : " , e);
             response.put("success", false);

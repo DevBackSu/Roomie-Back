@@ -78,5 +78,4 @@ public class User {
         this.refreshToken = updateRefreshToken;
     }
 
-    public void
 }
