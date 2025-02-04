@@ -65,7 +65,7 @@ public class User {
     private Role role;      // 최초 로그인인지 구분하기 위함 (guest - 최초 로그인 / user - 로그인 기록 존재 / admin - 관리자)
 
     @Column
-    @ColumnDefault("N")
+    @ColumnDefault("'N'")
     private String delYn;
 
     public String toString() {

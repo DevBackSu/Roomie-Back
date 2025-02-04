@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findById(@Param("id") Long id);
+    Optional<User> findById(Long id);
     Optional<User> findByEmail(String email);
     Optional<User> findByNickname(String nickname); // 별명 찾기
     Optional<User> findByRefreshToken(String refreshToken); // 리프레시 토큰 찾기
@@ -25,6 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // ㄴ영속성 컨텍스트에 정의된 데이터가 우선 순위를 갖고 덮어쓰지 않기 때문에 실제 변경된 데이터가 영속성 컨텍스트에 저장되지 못하고 기존 데이터가 출력될 수 있음
     @Query("UPDATE User u SET u.delYn = 'Y' WHERE u.id = :userId")
     int updateUserDelYn(@Param("userId") Long userId);
+
     /**
      * 소셜 로그인 후 추가 정보 insert를 위한 사용자 select 메소드
      */
