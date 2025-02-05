@@ -32,14 +32,18 @@ public interface MainControllerDocs {
     ResponseEntity<Map<String, Object>> getStatistics();
 
     // 메인 화면 중 특징 순위 반환
-//    @Operation(summary = "메인 화면 특징 순위 반환", description = "메인 화면에 특징 순위값을 반환합니다.")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "반환 성공"),
-//            @ApiResponse(responseCode = "400", description = "잘못된 요청")
-//    })
-//    public ResponseEntity<Map<String, Object>> getCrank();
+    @Operation(summary = "메인 화면 특징 순위 반환", description = "메인 화면에 특징 순위값을 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "반환 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    public ResponseEntity<Map<String, Object>> getCrank();
 
-    // 메인 화면 중 지역 순위 반환
+    @Operation(summary = "메인 화면 지역 순위 반환", description = "메인 화면에 지역 순위값을 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "반환 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
     public ResponseEntity<Map<String, Object>> getLrank();
 
 }

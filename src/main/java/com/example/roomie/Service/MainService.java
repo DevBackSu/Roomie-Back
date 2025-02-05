@@ -7,6 +7,6 @@ import java.util.Map;
 
 public interface MainService {
     Map<String, Object> getStatistics();
-//    public Map<String, Object> getCrank();
+    List<String> getCrank();
     List<String> getLrank();
 }

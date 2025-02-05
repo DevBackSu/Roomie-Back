@@ -7,6 +7,7 @@ import com.example.roomie.Service.MainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,18 +47,11 @@ public class MainServiceImpl implements MainService {
         return response;
     }
 
-//    public Map<String, Object> getCrank() {
-//        Map<String, Object> response = new HashMap<>();
-//
-//    // 1~5순위를 직접 조회하든 각각 조회해서 합치든 해야 할 듯
-//
-//        System.out.println("\n\n\n-------------------------------\n");
-//        System.out.println(rank.toString());
-//        System.out.println("\n-------------------------------\n\n\n");
-//
-//        response.put("rank", rank);
-//        return response;
-//    }
+    public List<String> getCrank() {
+        List<String> result = mainRepository.findCrank();
+
+        return result;
+    }
 
     public List<String> getLrank() {
         List<String> rank = mainRepository.findLrank();

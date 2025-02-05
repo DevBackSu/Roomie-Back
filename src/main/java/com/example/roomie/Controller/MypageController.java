@@ -34,6 +34,9 @@ public class MypageController {
         try {
             response = myService.getUserInfo(authHeader);
 
+            // List<CharacterDTO> list = myService.getUserCharacter(authHeader);
+            // String self = myService.getUserSelf(authHeader);
+
             String success = response.get("success").toString();
 
             if(success.equals("true")) {
