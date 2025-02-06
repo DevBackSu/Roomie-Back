@@ -1,5 +1,6 @@
 package com.example.roomie.Repository;
 
+import com.example.roomie.DTO.CharacterDTO;
 import com.example.roomie.Entity.SocialType;
 import com.example.roomie.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,4 +31,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * 소셜 로그인 후 추가 정보 insert를 위한 사용자 select 메소드
      */
     Optional<User> findBySocialTypeAndSocialToken(SocialType socialType, String socialToken);
+
+    @Query(value = "SELECT uc.ucCharacter.character " +
+            "FROM UserCharacter uc " +
+            "WHERE uc.userId = :userId " +
+            "GROUP BY uc.ucCharacter.character " +
+            "ORDER BY COUNT(uc.ucCharacter.character) DESC")
+    List<CharacterDTO> findUserCharacter(@Param("userId") Long userId);
+
+    @Query(value = "SELECT s.aboutMe " +
+                    "FROM Self s " +
+                    "WHERE s.userId = :userId ")
+    String findUserSelf(@Param("userId") Long userId);
 }

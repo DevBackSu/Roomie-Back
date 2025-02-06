@@ -14,7 +14,7 @@ public class Character {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "character_id")
     private Long characterId;
 
     @Column

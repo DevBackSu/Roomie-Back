@@ -1,5 +1,6 @@
 package com.example.roomie.Controller;
 
+import com.example.roomie.DTO.CharacterDTO;
 import com.example.roomie.DTO.UserPageDTO;
 import com.example.roomie.DTO.UserSingUpDTO;
 import com.example.roomie.Service.MyPageService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -34,8 +36,11 @@ public class MypageController {
         try {
             response = myService.getUserInfo(authHeader);
 
-            // List<CharacterDTO> list = myService.getUserCharacter(authHeader);
-            // String self = myService.getUserSelf(authHeader);
+            List<CharacterDTO> list = myService.getUserCharacter(authHeader);
+            String self = myService.getUserSelf(authHeader);
+
+            response.put("list", list);
+            response.put("self", self);
 
             String success = response.get("success").toString();
 

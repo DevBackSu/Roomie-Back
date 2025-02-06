@@ -1,19 +1,23 @@
 package com.example.roomie.Service.Impl;
 
+import com.example.roomie.DTO.CharacterDTO;
 import com.example.roomie.DTO.UserPageDTO;
 import com.example.roomie.Entity.User;
 import com.example.roomie.JWT.JwtService;
 import com.example.roomie.Repository.UserRepository;
 import com.example.roomie.Service.MyPageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MyPageServiceImpl implements MyPageService {
 
     private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token";
@@ -74,5 +78,38 @@ public class MyPageServiceImpl implements MyPageService {
 
         userRepository.save(user);
         return createSuccessResponse(userId);
+    }
+
+    @Override
+    public List<CharacterDTO> getUserCharacter(String authHeader) {
+        Long userId = validateAccessToken(authHeader);
+        if(userId == -1) {
+            log.error(INVALID_ACCESS_TOKEN_MSG);
+            return null;    // access token 오류 시 발생
+        }
+        try {
+            List<CharacterDTO> result = userRepository.findUserCharacter(userId);
+
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public String getUserSelf(String authHeader) {
+        Long userId = validateAccessToken(authHeader);
+        if(userId == -1) {
+            log.error(INVALID_ACCESS_TOKEN_MSG);
+            return "다시 로그인 해주세요!";
+        }
+        try {
+            String result = userRepository.findUserSelf(userId);
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return "DB 조회 오류";
+        }
     }
 }
