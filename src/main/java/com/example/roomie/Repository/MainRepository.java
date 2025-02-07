@@ -22,4 +22,3 @@ public interface MainRepository  extends JpaRepository<User, Long> {
             "ORDER BY COUNT(uc.ucCharacter.character) DESC")
     List<String> findCrank();
 }
-
