@@ -13,13 +13,14 @@ import lombok.*;
 public class UserCharacter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private int ucId;
+    @Column(name = "uc_id")
+    private Long ucId;
 
-    @Column
+    @Column(name = "user_id")
     private Long userId;
 
     @ManyToOne
-    private Character ucCharacter;
+    @JoinColumn(name="character_id", referencedColumnName = "character_id")
+    Character ucCharacter;
 
 }

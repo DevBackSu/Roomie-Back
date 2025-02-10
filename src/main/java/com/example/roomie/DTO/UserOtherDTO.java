@@ -9,7 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserCharacterDTO {
+public class UserOtherDTO {
     private Long userId; // 사용자 ID
-    private List<String> features; // 사용자가 선택한 특징 목록
+    private List<Integer> features; // 사용자가 선택한 특징 목록
+    private String self;
 }

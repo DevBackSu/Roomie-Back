@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MainRepository  extends JpaRepository<User, Long> {
+public interface MainRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.mainAnimal FROM User u")
     List<Integer> findMainAnimal();
 

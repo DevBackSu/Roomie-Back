@@ -1,10 +1,9 @@
 package com.example.roomie.Controller;
 
+import com.example.roomie.DTO.UserOtherDTO;
 import com.example.roomie.DTO.UserSingUpDTO;
 import com.example.roomie.Service.UserService;
 import com.example.roomie.SwaggerForm.UserControllerDocs;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -94,6 +93,25 @@ public class UserController implements UserControllerDocs {
 
         } catch (Exception e) {
             //회원 가입 중 오류 발생
+            log.error("Error while saving user info : " , e);
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * 사용자의 특성 / 자기소개 저장
+     */
+    @PostMapping("/infoOther")
+    public ResponseEntity<Map<String, Object>> saveUserInfoOther(@RequestBody UserOtherDTO userOtherDTO, @RequestHeader("Authorization") String authHeader) {
+        log.info("사용자의 특성 및 자기소개 저장을 위한 saveUserInfoOther 접근");
+        Map<String, Object> response = new HashMap<>();
+        try {
+
+            userService.saveUserInfoOther(userOtherDTO, authHeader);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
             log.error("Error while saving user info : " , e);
             response.put("success", false);
             response.put("message", e.getMessage());
