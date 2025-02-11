@@ -50,38 +50,40 @@ public class User {
     @ColumnDefault("1")  // 테이블 생성 시의 초기값 설정
     private String imgUrl; // 추가 정보 (프로필 이미지)
 
-    @Column
+    @Column(name = "social_type")
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
-    @Column
+    @Column(name = "social_token")
     private String socialToken;
 
-    @Column
+    @Column(name = "refresh_token")
     private String refreshToken; // JWT 사용 시 발행된 액세스 토큰과 리프레시 토큰 중 리프레시 토큰을 저장함
 
     @Column
     @Enumerated(EnumType.STRING)
     private Role role;      // 최초 로그인인지 구분하기 위함 (guest - 최초 로그인 / user - 로그인 기록 존재 / admin - 관리자)
 
-    @Column
-    private String privacy_agr; // 개인정보 동의 여부
+    @Column(name = "privacy_agr")
+    @ColumnDefault("'N'")  // 테이블 생성 시의 초기값 설정
+    private String privacyAgr; // 개인정보 동의 여부
 
-    @Column
+    @Column(name = "del_yn")
     @ColumnDefault("'N'")
     private String delYn;
 
-    @Column
-    private String recode_yn; // 추천 가능 여부
+    @Column(name = "recode_yn")
+    @ColumnDefault("'Y'")  // 테이블 생성 시의 초기값 설정
+    private String recodeYn; // 추천 가능 여부
 
-    @Column
-    private String join_date; // 가입일
+    @Column(name = "join_date")
+    private String joinDate; // 가입일
 
     public String toString() {
         return "id : " + id + "\nnickname : " + nickname + "\ngender : " + gender + "\nbirth_date : " + birthDate + "\nschool : " + school + "\nlocal : " + local +
                 "\nimg : " + imgUrl + "\nemail : " + email + "\nrefreshToken : " + refreshToken + "\nsocialType : " + socialType + "\nsocialToken : " + socialToken
-                + "\nrole : " + role + "\ndelYn : " + delYn + "\nprivacy_agr : " + privacy_agr + "\n"
-                + "\nrecode_yn : " + recode_yn + "\njoin_date : " + join_date + "\n";
+                + "\nrole : " + role + "\ndelYn : " + delYn + "\nprivacy_agr : " + privacyAgr + "\n"
+                + "\nrecode_yn : " + recodeYn + "\njoin_date : " + joinDate + "\n";
     }
 
     public void updateRefreshToken(String updateRefreshToken) {  // 리프레시 토큰 재발급

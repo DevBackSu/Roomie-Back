@@ -13,12 +13,12 @@ import lombok.*;
 public class Self {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "self_id")
     private Long selfId;
 
-    @Column
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column
+    @Column(name = "about_me")
     private String aboutMe;
 }

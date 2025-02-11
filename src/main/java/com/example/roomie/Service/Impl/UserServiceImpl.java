@@ -2,6 +2,7 @@ package com.example.roomie.Service.Impl;
 
 import com.example.roomie.DTO.UserOtherDTO;
 import com.example.roomie.DTO.UserSingUpDTO;
+import com.example.roomie.Entity.Characters;
 import com.example.roomie.Entity.Self;
 import com.example.roomie.Entity.User;
 import com.example.roomie.Entity.UserCharacter;
@@ -93,7 +94,7 @@ public class UserServiceImpl implements UserService {
             List<UserCharacter> userCharacters = userOtherDTO.getFeatures().stream()
                     .map(characterId -> UserCharacter.builder()
                             .userId(userId)
-                            .ucCharacter(Character.builder().characterId(characterId).build())
+                            .ucCharacter(Characters.builder().characterId(characterId).build())
                             .build()
                     )
                     .toList();

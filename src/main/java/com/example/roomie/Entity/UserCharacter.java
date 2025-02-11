@@ -16,11 +16,10 @@ public class UserCharacter {
     @Column(name = "uc_id")
     private Long ucId;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @ManyToOne
-    @JoinColumn(name="character_id", referencedColumnName = "character_id")
-    Character ucCharacter;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="character_id", referencedColumnName = "character_id", nullable = false)
+    Characters ucCharacter;
 }
