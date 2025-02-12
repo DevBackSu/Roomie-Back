@@ -81,14 +81,14 @@ public class MyPageServiceImpl implements MyPageService {
     }
 
     @Override
-    public List<CharacterDTO> getUserCharacter(String authHeader) {
+    public List<String> getUserCharacter(String authHeader) {
         Long userId = validateAccessToken(authHeader);
         if(userId == -1) {
             log.error(INVALID_ACCESS_TOKEN_MSG);
             return null;    // access token 오류 시 발생
         }
         try {
-            List<CharacterDTO> result = userRepository.findUserCharacter(userId);
+            List<String> result = userRepository.findUserCharacter(userId);
 
             return result;
         } catch (Exception e) {

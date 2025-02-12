@@ -36,7 +36,7 @@ public class MypageController {
         try {
             response = myService.getUserInfo(authHeader);
 
-            List<CharacterDTO> list = myService.getUserCharacter(authHeader);
+            List<String> list = myService.getUserCharacter(authHeader);
             String self = myService.getUserSelf(authHeader);
 
             response.put("list", list);

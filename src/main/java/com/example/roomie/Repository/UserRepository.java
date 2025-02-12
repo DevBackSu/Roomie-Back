@@ -32,12 +32,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     Optional<User> findBySocialTypeAndSocialToken(SocialType socialType, String socialToken);
 
-    @Query(value = "SELECT uc.ucCharacter.character " +
+    @Query("SELECT c.character " +
             "FROM UserCharacter uc " +
-            "WHERE uc.userId = :userId " +
-            "GROUP BY uc.ucCharacter.character " +
-            "ORDER BY COUNT(uc.ucCharacter.character) DESC")
-    List<CharacterDTO> findUserCharacter(@Param("userId") Long userId);
+            "JOIN uc.ucCharacter c " +
+            "WHERE uc.userId = :userId")
+    List<String> findUserCharacter(@Param("userId") Long userId);
 
     @Query(value = "SELECT s.aboutMe " +
                     "FROM Self s " +

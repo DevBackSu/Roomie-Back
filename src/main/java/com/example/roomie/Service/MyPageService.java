@@ -9,6 +9,6 @@ import java.util.Map;
 public interface MyPageService {
     Map<String, Object> getUserInfo(String authHeader);
     Map<String, Object> saveUserInfo(UserPageDTO userPageDTO, String authHeader);
-    List<CharacterDTO> getUserCharacter(String authHeader);
+    List<String> getUserCharacter(String authHeader);
     String getUserSelf(String authHeader);
 }
