@@ -5,6 +5,7 @@ import com.example.roomie.DTO.UserPageDTO;
 import com.example.roomie.DTO.UserSingUpDTO;
 import com.example.roomie.Service.MyPageService;
 import com.example.roomie.Service.UserService;
+import com.example.roomie.SwaggerForm.MyPageControllerDocs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/mypage")
 @Slf4j
-public class MypageController {
+public class MypageController implements MyPageControllerDocs {
 
     private final MyPageService myService;
 
@@ -83,5 +84,21 @@ public class MypageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
 
+    }
+
+    /**
+     * 마이페이지 특성 및 자기소개 수정을 위한 API
+     */
+    @PostMapping("/myotherUpdate")
+    public ResponseEntity<Map<String, Object>> updateUserOtherInfo(@RequestHeader("Authorization") String authHeader) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            return ResponseEntity.ok(response);
+
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 }

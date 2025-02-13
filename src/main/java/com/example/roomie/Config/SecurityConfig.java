@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) // 기본 로그인 폼을 사용하지 않음
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP 기본 인증 사용하지 않음
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")) // H2 콘솔에 대해 CSRF 비활성화
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/swagger-ui/**")) // 스웨거에 대해 CSRF 비활성화?
 
                 // CSRF 보호 비활성화 (필요에 따라 설정 가능)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -57,7 +58,8 @@ public class SecurityConfig {
                 // URL별로 접근 권한 설정
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console", "/h2-console/**").permitAll() // 특정 리소스에 대한 접근 허용
-                        .requestMatchers("/api/**").permitAll() // 메인, 로그인 페이지는 인증 없이 접근 허용
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll() // Swagger 관련 경로 허용
+                        .requestMatchers("/api/**").permitAll() // 기본 api 호출 시 인증 X
                         .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated() // 나머지 요청은 인증이 필요
                 )
