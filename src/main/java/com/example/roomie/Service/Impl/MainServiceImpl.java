@@ -37,9 +37,11 @@ public class MainServiceImpl implements MainService {
             double percentage2 = Math.floor((count2 * 100.0) / totalCount);
 
             // 퍼센트 값 저장
+            response.put("success", true);
             response.put("1", String.valueOf((long) percentage1));  // long으로 변환하여 저장
             response.put("2", String.valueOf((long) percentage2));  // long으로 변환하여 저장
         } else {
+            response.put("success", false);
             response.put("1", "0");
             response.put("2", "0");
         }

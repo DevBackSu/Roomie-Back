@@ -27,6 +27,11 @@ public class MainController implements MainControllerDocs {
         Map<String, Object> statistics = new HashMap<>();
         try {
             statistics = mainService.getStatistics();
+            String success = statistics.get("success").toString();
+            statistics.remove("success");
+            if(!success.equals("true")) {
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(statistics);
+            }
             return ResponseEntity.ok(statistics);
         } catch (Exception e) {
             statistics.put("error", e.getMessage());

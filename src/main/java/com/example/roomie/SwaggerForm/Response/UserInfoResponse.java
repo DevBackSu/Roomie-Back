@@ -14,8 +14,8 @@ import java.util.List;
 public class UserInfoResponse {
     @Schema(description = "성공 여부", example = "true")
     private String success;
-    @Schema(description = "사용자의 User 테이블 데이터")
-    private UserPageDTO userPageDTO;
+    @Schema(description = "사용자 정보 (User 테이블 한정)")
+    private UserPageDTO data;
     @Schema(description = "사용자의 특성 리스트")
     private List<String> list; // 특성 리스트
     @Schema(description = "사용자의 자기소개")

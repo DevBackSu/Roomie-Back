@@ -1,6 +1,8 @@
 package com.example.roomie.SwaggerForm;
 
+import com.example.roomie.DTO.UserOtherDTO;
 import com.example.roomie.DTO.UserPageDTO;
+import com.example.roomie.SwaggerForm.Response.ErrorResponse;
 import com.example.roomie.SwaggerForm.Response.UserInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,12 +25,37 @@ public interface MyPageControllerDocs {
                 content = {@Content(
                         schema = @Schema(implementation = UserInfoResponse.class)
                 )}),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
+            content = {@Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
+            )})
     })
     ResponseEntity<Map<String, Object>> getUserInfo(@RequestHeader("Authorization") String authHeader);
 
+    @Operation(summary = "마이페이지에서 사용자 정보 수정", description = "프로필 이미지, 이름, 성별, 생년월, 학교, 지역, 이메일, 메인 동물을 수정할 수 있습니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "반환 성공",
+                    content = {@Content(
+                            schema = @Schema(implementation = UserPageDTO.class)
+                    )}),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
+                    content = {@Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )})
+    })
     ResponseEntity<Map<String, Object>> updateUserInfo(@RequestHeader("Authorization") String authHeader, @RequestBody UserPageDTO userPageDTO);
 
+    @Operation(summary = "마이페이지에 사용자의 특성과 자기소개 수정", description = "특성, 자기소개를 수정할 수 있습니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "반환 성공",
+                    content = {@Content(
+                            schema = @Schema(implementation = UserOtherDTO.class)
+                    )}),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
+                    content = {@Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )})
+    })
     ResponseEntity<Map<String, Object>> updateUserOtherInfo(@RequestHeader("Authorization") String authHeader);
 
 }
