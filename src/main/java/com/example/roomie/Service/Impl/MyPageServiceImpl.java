@@ -2,8 +2,10 @@ package com.example.roomie.Service.Impl;
 
 import com.example.roomie.DTO.CharacterDTO;
 import com.example.roomie.DTO.UserPageDTO;
+import com.example.roomie.Entity.Characters;
 import com.example.roomie.Entity.User;
 import com.example.roomie.JWT.JwtService;
+import com.example.roomie.Repository.CharacterRepository;
 import com.example.roomie.Repository.UserRepository;
 import com.example.roomie.Service.MyPageService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ public class MyPageServiceImpl implements MyPageService {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final CharacterRepository characterRepository;
 
     private Map<String, Object> createErrorResponse(String message) {
         Map<String, Object> response = new HashMap<>();
@@ -111,5 +115,17 @@ public class MyPageServiceImpl implements MyPageService {
             log.error(e.getMessage());
             return "DB 조회 오류";
         }
+    }
+
+    @Override
+    public List<CharacterDTO> findCharacter() {
+        List<Characters> result = characterRepository.findAll();
+
+        return result.stream().map(character -> {
+            CharacterDTO dto = new CharacterDTO();
+            dto.setId(character.getCharacterId());
+            dto.setName(character.getCharacter());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

@@ -32,12 +32,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     Optional<User> findBySocialTypeAndSocialToken(SocialType socialType, String socialToken);
 
+    // 이건 user character repo로 이동하기
     @Query("SELECT c.character " +
             "FROM UserCharacter uc " +
             "JOIN uc.ucCharacter c " +
             "WHERE uc.userId = :userId")
     List<String> findUserCharacter(@Param("userId") Long userId);
 
+
+    // 이건 self repo로 이동해야 할 듯
     @Query(value = "SELECT s.aboutMe " +
                     "FROM Self s " +
                     "WHERE s.userId = :userId ")

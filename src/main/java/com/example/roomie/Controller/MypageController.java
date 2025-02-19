@@ -86,6 +86,30 @@ public class MypageController implements MyPageControllerDocs {
 
     }
 
+    @GetMapping("/findCharacter")
+    public ResponseEntity<Map<String, Object>> findCharacter() {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            List<CharacterDTO> result = myService.findCharacter();
+
+            System.out.println("\n\n\n-------------------------------\n");
+            result.forEach(dto ->
+                    System.out.println("DTO ID: " + dto.getId() + ", DTO Name: " + dto.getName())
+            );
+            System.out.println("\n-------------------------------\n\n\n");
+
+            response.put("success", true);
+            response.put("result", result);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
     /**
      * 마이페이지 특성 및 자기소개 수정을 위한 API
      */

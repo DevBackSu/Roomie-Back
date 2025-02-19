@@ -10,5 +10,6 @@ public interface MyPageService {
     Map<String, Object> getUserInfo(String authHeader);
     Map<String, Object> saveUserInfo(UserPageDTO userPageDTO, String authHeader);
     List<String> getUserCharacter(String authHeader);
+    List<CharacterDTO> findCharacter();
     String getUserSelf(String authHeader);
 }
