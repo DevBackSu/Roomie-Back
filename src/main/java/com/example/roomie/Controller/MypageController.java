@@ -1,6 +1,7 @@
 package com.example.roomie.Controller;
 
 import com.example.roomie.DTO.CharacterDTO;
+import com.example.roomie.DTO.UserOtherDTO;
 import com.example.roomie.DTO.UserPageDTO;
 import com.example.roomie.DTO.UserSingUpDTO;
 import com.example.roomie.Service.MyPageService;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class MypageController implements MyPageControllerDocs {
 
     private final MyPageService myService;
+    private final UserService userService;
 
     /**
      * 사용자가 MyPage를 호출했을 경우 실행됨
@@ -112,12 +114,14 @@ public class MypageController implements MyPageControllerDocs {
 
     /**
      * 마이페이지 특성 및 자기소개 수정을 위한 API
+     * 위에 있는 건 save지 update가 아님..
      */
     @PostMapping("/myotherUpdate")
-    public ResponseEntity<Map<String, Object>> updateUserOtherInfo(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<Map<String, Object>> updateUserOtherInfo(@RequestHeader("Authorization") String authHeader, @RequestBody UserOtherDTO userOtherDTO) {
         Map<String, Object> response = new HashMap<>();
 
         try {
+            response = userService.updateUserOtherInfo(authHeader, userOtherDTO);
             return ResponseEntity.ok(response);
 
         }

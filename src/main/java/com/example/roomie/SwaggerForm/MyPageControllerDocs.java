@@ -56,6 +56,6 @@ public interface MyPageControllerDocs {
                             schema = @Schema(implementation = ErrorResponse.class)
                     )})
     })
-    ResponseEntity<Map<String, Object>> updateUserOtherInfo(@RequestHeader("Authorization") String authHeader);
+    ResponseEntity<Map<String, Object>> updateUserOtherInfo(@RequestHeader("Authorization") String authHeader, @RequestBody UserOtherDTO userOtherDTO);
 
 }
