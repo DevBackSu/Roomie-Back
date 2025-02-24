@@ -67,7 +67,7 @@ public class MypageController implements MyPageControllerDocs {
      * @param userPageDTO : 사용자가 입력한 값
      * @return response
      */
-    @PostMapping("/mypageUpdage")
+    @PostMapping("/mypageUpdate")
     public ResponseEntity<Map<String, Object>> updateUserInfo(@RequestHeader("Authorization") String authHeader, @RequestBody UserPageDTO userPageDTO) {
         log.info("updage User Info 접근");
         Map<String, Object> response = new HashMap<>();
@@ -118,12 +118,12 @@ public class MypageController implements MyPageControllerDocs {
      */
     @PostMapping("/myotherUpdate")
     public ResponseEntity<Map<String, Object>> updateUserOtherInfo(@RequestHeader("Authorization") String authHeader, @RequestBody UserOtherDTO userOtherDTO) {
+        log.info("my other update");
         Map<String, Object> response = new HashMap<>();
 
         try {
             response = userService.updateUserOtherInfo(authHeader, userOtherDTO);
             return ResponseEntity.ok(response);
-
         }
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);

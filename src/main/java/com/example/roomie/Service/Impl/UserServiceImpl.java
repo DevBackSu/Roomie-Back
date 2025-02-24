@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 사용자의 특성 및 자기소개 값을 업데이트 함
+     * 사용자의 특성 및 자기소개 값을 저장함
      * @param userOtherDTO 사용자의 특성값 및 자기소개 값을 저장하는 DTO
      * @param authHeader access token
      * @return 실패/성공 여부
@@ -117,6 +117,56 @@ public class UserServiceImpl implements UserService {
         token.put("success", true);
         return token;
     }
+
+    /**
+     * 사용자의 특성 및 자기소개 값을 수정함
+     * @param authHeader access token
+     * @param userOtherDTO 사용자의 특성 및 자기소개 값
+     * @return result
+     */
+    public Map<String, Object> updateUserOtherInfo(String authHeader, UserOtherDTO userOtherDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 1. JWT 토큰에서 userId 추출
+        String accessToken = jwtService.extractTokenAccessToken(authHeader);
+        Long userId = jwtService.accessTokenToId(accessToken);
+
+        // 2. 유효하지 않은 토큰인 경우
+        if (userId == -1) {
+            response.put("success", false);
+            response.put("message", "Invalid access token");
+            return response;
+        }
+
+
+        try {
+            // 3. 자기소개 업데이트
+            selfRepository.updateAboutMe(userId, userOtherDTO.getSelf());
+
+            // 4. 기존 특성 삭제 후 새 데이터 추가
+            userCharacterRepository.deleteByUserId(userId);
+
+            List<UserCharacter> userCharacters = userOtherDTO.getFeatures().stream()
+                    .map(characterId -> UserCharacter.builder()
+                            .userId(userId)
+                            .ucCharacter(Characters.builder().characterId(characterId).build())
+                            .build()
+                    )
+                    .toList();
+            userCharacterRepository.saveAll(userCharacters);
+
+            // 5. 성공 응답 반환
+            response.put("success", true);
+            return response;
+        } catch (Exception e) {
+            // 예외 발생 시 실패 응답 반환
+            response.put("success", false);
+            response.put("message", "업데이트 실패: " + e.getMessage());
+            return response;
+        }
+    }
+
+
 
     /**
      * 사용자 탈퇴 처리 -> del_yn 컬럼의 값을 Y로 변경

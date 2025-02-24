@@ -10,4 +10,5 @@ public interface UserService {
     Map<String, Object> saveUserInfo(UserSingUpDTO userSingUpDTO, String authHeader);
     Map<String, Object> saveUserInfoOther(UserOtherDTO userOtherDTO, String authHeader);
     Map<String, Object> deleteUser(String authHeader);
+    Map<String, Object> updateUserOtherInfo(String authHeader,UserOtherDTO userOtherDTO);
 }
