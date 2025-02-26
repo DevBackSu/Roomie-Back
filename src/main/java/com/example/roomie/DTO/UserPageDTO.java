@@ -43,6 +43,16 @@ public class UserPageDTO {
         return dto;
     }
 
+    public static UserPageDTO fromEntitytoMain(User user) {
+        UserPageDTO dto = new UserPageDTO();
+        dto.setNickname(user.getNickname());
+        dto.setMainAnimal(user.getMainAnimal());
+        dto.setBirthDate(user.getBirthDate() != null ? user.getBirthDate().toString() : null);
+        dto.setLocal(user.getLocal());
+        dto.setImgUrl(user.getImgUrl());
+        return dto;
+    }
+
     public void updateUserEntity(User user) {
         if (this.nickname != null) user.setNickname(this.nickname);
         if (this.gender != null) user.setGender(this.gender);

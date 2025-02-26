@@ -94,13 +94,6 @@ public class MypageController implements MyPageControllerDocs {
 
         try {
             List<CharacterDTO> result = myService.findCharacter();
-
-            System.out.println("\n\n\n-------------------------------\n");
-            result.forEach(dto ->
-                    System.out.println("DTO ID: " + dto.getId() + ", DTO Name: " + dto.getName())
-            );
-            System.out.println("\n-------------------------------\n\n\n");
-
             response.put("success", true);
             response.put("result", result);
             return ResponseEntity.ok(response);

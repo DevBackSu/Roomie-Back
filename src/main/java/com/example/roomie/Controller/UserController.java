@@ -33,8 +33,9 @@ public class UserController implements UserControllerDocs {
         Map<String, Object> response = new HashMap<>();
 
         try {
-
             // User service에서 findUser하는 부분 넣기
+            response = userService.findUser(authHeader);
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             log.error("Error while saving user info : " , e);
@@ -42,8 +43,6 @@ public class UserController implements UserControllerDocs {
             response.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     /**

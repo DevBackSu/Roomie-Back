@@ -1,6 +1,8 @@
 package com.example.roomie.Service.Impl;
 
+import com.example.roomie.DTO.UserDTO;
 import com.example.roomie.DTO.UserOtherDTO;
+import com.example.roomie.DTO.UserPageDTO;
 import com.example.roomie.DTO.UserSingUpDTO;
 import com.example.roomie.Entity.Characters;
 import com.example.roomie.Entity.Self;
@@ -26,6 +28,40 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
     private final UserCharacterRepository userCharacterRepository;
     private final SelfRepository selfRepository;
+
+    /**
+     * 사용자의 정보를 호출하는 메소드
+     * @param authHeader access token
+     * @return 사용자 정보
+     */
+    public Map<String, Object> findUser(String authHeader) {
+        Map<String, Object> token = new HashMap<>();
+
+        String accessToken = jwtService.extractTokenAccessToken(authHeader);  // access token 추출
+        Long userId = jwtService.accessTokenToId(accessToken); // access token 검증
+
+        if(userId == -1) {  // access token이 유효하지 않을 경우
+            token.put("success", false);
+            token.put("message", "Invalid access token");
+            return token;
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if(!(user == null)) {
+//            UserDTO userData = UserDTO.fromEntity(user);
+            UserPageDTO userData = UserPageDTO.fromEntitytoMain(user);
+            token.put("success", true);
+            token.put("user", userData);
+        }
+        else {
+            token.put("success", false);
+            token.put("message", "User not found");
+            return token;
+        }
+
+        return token;
+    }
 
     /**
      * 사용자의 정보를 수정할 때 사용하는 메소드
