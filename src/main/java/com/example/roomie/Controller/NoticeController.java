@@ -1,16 +1,16 @@
 package com.example.roomie.Controller;
 
+import com.example.roomie.Entity.Notice;
+import com.example.roomie.Service.NoticeService;
 import com.example.roomie.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -23,14 +23,20 @@ public class NoticeController {
 
     /**
      * 전체 게시글 목록 조회
+     * JPA의 Pageable을 사용해 페이지네이션 함
+     *
      */
     @GetMapping("/")
-    public ResponseEntity<Map<String, Object>> getNoticeList() {
+    public ResponseEntity<Map<String, Object>> getNoticeList(@RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size) {
         log.info("getNoticeList 접근");
         Map<String, Object> response = new HashMap<>();
 
         try {
-            response = noticeService.getNoticeList();
+            List<Notice> noticeList = noticeService.getNoticeList(page, size);
+
+            response.put("success", "true");
+            response.put("noticeList", noticeList);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
