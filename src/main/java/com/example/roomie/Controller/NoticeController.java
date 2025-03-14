@@ -46,4 +46,20 @@ public class NoticeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+    /**
+     * 게시글 조회
+     */
+
+    /**
+     * 게시글 등록
+     */
+
+    /**
+     * 게시글 수정
+     */
+
+    /**
+     * 게시글 삭제
+     */
 }
