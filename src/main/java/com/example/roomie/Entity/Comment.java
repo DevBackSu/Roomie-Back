@@ -19,8 +19,8 @@ public class Comment {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "notice_id", nullable = false)
-    private Long noticeId;
+    @Column(name = "post_id", nullable = false)
+    private Long postId;
 
     @Column(name = "commnet_content")
     private String commentContent;

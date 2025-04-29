@@ -9,12 +9,12 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "Notice")
-public class Notice {
+@Table(name = "Post")
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notice_id")
-    private Long noticeId;
+    @Column(name = "post_id")
+    private Long postId;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;

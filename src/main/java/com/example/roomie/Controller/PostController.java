@@ -1,7 +1,7 @@
 package com.example.roomie.Controller;
 
-import com.example.roomie.Entity.Notice;
-import com.example.roomie.Service.NoticeService;
+import com.example.roomie.Entity.Post;
+import com.example.roomie.Service.PostService;
 import com.example.roomie.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,28 +15,28 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/notice")
+@RequestMapping("/api/posting")
 @Slf4j
-public class NoticeController {
-    private final NoticeService noticeService;
+public class PostController {
+    private final PostService postService;
     private final UserService userService;
 
     /**
      * 전체 게시글 목록 조회
      * JPA의 Pageable을 사용해 페이지네이션 함
-     *
+     * 여기에 경로로 / 을 추가하면 프론트에서 호출할 때 /api/posting/?.. 이런 식으로 호출해야 함
      */
-    @GetMapping("/")
-    public ResponseEntity<Map<String, Object>> getNoticeList(@RequestParam(defaultValue = "0") int page,
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getPostList(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "10") int size) {
-        log.info("getNoticeList 접근");
+        log.info("getPostList 접근");
         Map<String, Object> response = new HashMap<>();
 
         try {
-            List<Notice> noticeList = noticeService.getNoticeList(page, size);
+            Map<String, Object> postData = postService.getPostList(page, size);
 
             response.put("success", "true");
-            response.put("noticeList", noticeList);
+            response.put("postData", postData);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
