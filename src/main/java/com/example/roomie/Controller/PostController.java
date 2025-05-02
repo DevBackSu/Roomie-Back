@@ -32,6 +32,12 @@ public class PostController {
         log.info("getPostList 접근");
         Map<String, Object> response = new HashMap<>();
 
+        if (page < 0 || size <= 0) {
+            response.put("success", "false");
+            response.put("error", "올바르지 않은 page 또는 size 값입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
         try {
             Map<String, Object> postData = postService.getPostList(page, size);
 
