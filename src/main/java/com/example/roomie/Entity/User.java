@@ -90,4 +90,7 @@ public class User {
         this.refreshToken = updateRefreshToken;
     }
 
+    public void updateRole(Role role) {
+        this.role = role;
+    }
 }
