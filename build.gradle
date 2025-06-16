@@ -39,9 +39,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security' // 시큐리티
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4' // properties 암호화에 사용하는 암/복호화 라이브러리 (https://green-bin.tistory.com/30)
 //	testImplementation 'org.springframework.graphql:spring-graphql-test'
+	dependencies {
+		implementation 'net.bytebuddy:byte-buddy:1.14.0' // 최신 버전 확인 후 업데이트
+	}
 
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.mockito:mockito-inline:5.2.0"                 // mockito (모의객체) 설치
+
 	runtimeOnly 'com.h2database:h2'
 }
 

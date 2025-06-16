@@ -29,4 +29,8 @@ public class CustomOAuth2User extends DefaultOAuth2User {
         this.role = role;
         this.socialToken = socialToken;
     }
+
+    public String getNickname() {
+        return this.name;
+    }
 }

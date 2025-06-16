@@ -16,6 +16,9 @@ public class Post {
     @Column(name = "post_id")
     private Long postId;
 
+    @Column(name = "post_check_id", unique = true, nullable = false)
+    private Long postCheckId;
+
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
@@ -27,4 +30,9 @@ public class Post {
 
     @Column(name = "write_dtm")
     private String writeDtm;
+
+    public Long generateRandomPostCheckId() {
+        return (long) (Math.random() * 900000) + 100000; // 100000 ~ 999999 사이의 숫자
+    }
+
 }

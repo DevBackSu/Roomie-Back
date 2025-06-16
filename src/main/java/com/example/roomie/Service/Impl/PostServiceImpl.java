@@ -22,7 +22,7 @@ public class PostServiceImpl implements PostService {
     private final JwtService jwtService;
 
     public Map<String, Object> getPostList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("writeDtm").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("postId").descending());
 
         Page<Post> postPage = postRepository.findAll(pageable); // Page 객체로 받아야 totalElements 사용 가능
 

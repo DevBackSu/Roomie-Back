@@ -56,6 +56,21 @@ public class PostController {
     /**
      * 게시글 조회
      */
+    @GetMapping("/detail/{postChekId}")
+    public ResponseEntity<Map<String, Object>> getPostDetail(@PathVariable Long postChekId) {
+        log.info("post detail 접근");
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Post post = postService.getPostDetail(postChekId);
+            response.put("success", "true");
+            response.put("postData", post);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", "false");
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
     /**
      * 게시글 등록
