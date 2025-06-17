@@ -1,5 +1,6 @@
 package com.example.roomie.Service.Impl;
 
+import com.example.roomie.DTO.PostDTO;
 import com.example.roomie.Entity.Post;
 import com.example.roomie.JWT.JwtService;
 import com.example.roomie.Repository.PostRepository;
@@ -21,6 +22,28 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final JwtService jwtService;
 
+    private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token";
+    private static final String USER_NOT_FOUND_MSG = "User not found with id: ";
+
+    private Long validateAccessToken(String authHeader) {
+        String accessToken = jwtService.extractTokenAccessToken(authHeader);
+        return jwtService.accessTokenToId(accessToken);
+    }
+
+    private Map<String, Object> createErrorResponse(String message) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", message);
+        return response;
+    }
+
+    private Map<String, Object> createSuccessResponse(Object data) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("data", data);
+        return response;
+    }
+
     public Map<String, Object> getPostList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("postId").descending());
 
@@ -31,5 +54,20 @@ public class PostServiceImpl implements PostService {
         result.put("totalPosts", postPage.getTotalElements()); // 전체 게시글 수
 
         return result;
+    }
+
+    public Map<String, Object> getPostDetail(Long postCheckId, String token) {
+       Long userId = validateAccessToken(token);
+       if(userId == -1) {
+           return createErrorResponse(INVALID_ACCESS_TOKEN_MSG);
+       }
+
+        PostDTO postDTO = postRepository.findPostDetailByCheckId(postCheckId);
+
+        if (postDTO == null) {
+            return createErrorResponse("게시글을 찾을 수 없습니다.");
+        }
+
+        return createSuccessResponse(postDTO);
     }
 }

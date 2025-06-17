@@ -1,5 +1,6 @@
 package com.example.roomie.Controller;
 
+import com.example.roomie.DTO.PostDTO;
 import com.example.roomie.Entity.Post;
 import com.example.roomie.Service.PostService;
 import com.example.roomie.Service.UserService;
@@ -57,13 +58,11 @@ public class PostController {
      * 게시글 조회
      */
     @GetMapping("/detail/{postChekId}")
-    public ResponseEntity<Map<String, Object>> getPostDetail(@PathVariable Long postChekId) {
+    public ResponseEntity<Map<String, Object>> getPostDetail(@PathVariable Long postChekId, @RequestHeader("Authorization") String authHeader) {
         log.info("post detail 접근");
         Map<String, Object> response = new HashMap<>();
         try {
-            Post post = postService.getPostDetail(postChekId);
-            response.put("success", "true");
-            response.put("postData", post);
+            response = postService.getPostDetail(postChekId, authHeader);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", "false");

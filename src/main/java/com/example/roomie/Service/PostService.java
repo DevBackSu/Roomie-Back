@@ -8,4 +8,6 @@ import java.util.Map;
 public interface PostService {
 
     Map<String, Object> getPostList(int page, int size);
+
+    Map<String, Object> getPostDetail(Long postCheckId, String token);
 }
