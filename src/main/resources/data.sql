@@ -1,3 +1,6 @@
+INSERT INTO USERS(user_id, email, nickname, gender, main_animal, social_type, role)
+VALUES (1, 'test@example.com', '테스트유저', '여', 1, 'Kakao','USER');
+
 INSERT INTO CHARACTERS(character_id, character) VALUES(1, '주말마다 집에 가요');
 INSERT INTO CHARACTERS(character_id, character) VALUES(2, '밖에 잘 안 나가요');
 INSERT INTO CHARACTERS(character_id, character) VALUES(3, '잠귀가 어두워요');

@@ -17,8 +17,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     // 이걸로 조회도 가능한데 지금은 조건을 가진 pageable 객체를 만들고 findAll(pageable)로 조회해서 사용 X
 //    List<Post> findAllByOrderByWriteDtmDesc(Pageable pageable);
 
-    @Query("SELECT new com.example.roomie.DTO.PostDTO(p.postId, p.userId, p.title, p.content, p.writeDtm, u.nickname) " +
-            "FROM Post p JOIN User u ON p.userId = u.id " +
-            "WHERE p.postCheckId = :postCheckId")
+    // JPQL은 필드 순서대로 바인딩됨 -> 필드와 select에 작성한 필드 순서가 다르면 오류가 발생할 수 있음
+    @Query("SELECT new com.example.roomie.DTO.PostDTO(p.postId, p.user.id, p.postCheckId, p.title, p.content, p.writeDtm, p.user.nickname) " +
+            "FROM Post p WHERE p.postCheckId = :postCheckId")
     PostDTO findPostDetailByCheckId(@Param("postCheckId") Long postCheckId);
 }

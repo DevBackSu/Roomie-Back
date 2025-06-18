@@ -8,27 +8,30 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
+//@AllArgsConstructor // JPQL에서는 적용되지 않음
 public class PostDTO {
     private Long postId;
     private Long userId;
+    private Long postCheckId;
     private String title;
     private String content;
     private String writeDtm;
     private String writerName;
 
-    // JPQL에서 사용할 생성자 -> AllArgsConstructor 애너테이션으로 생성함
-//    public PostDTO(Long postId, Long userId, String title, String content, String writeDtm, String writerName) {
-//        this.postId = postId;
-//        this.userId = userId;
-//        this.title = title;
-//        this.content = content;
-//        this.writeDtm = writeDtm;
-//        this.writerName = writerName;
-//    }
+    // JPQL에서 사용할 생성자
+    public PostDTO(Long postId, Long userId, Long postCheckId, String title, String content, String writeDtm, String writerName) {
+        this.postId = postId;
+        this.userId = userId;
+        this.postCheckId = postCheckId;
+        this.title = title;
+        this.content = content;
+        this.writeDtm = writeDtm;
+        this.writerName = writerName;
+    }
 
     public String toString() {
-        return "PostDTO [postId=" + postId + ", title=" + title + ", content=" + content
-                + ", writeDtm=" + writeDtm + ", writerName=" + writerName + "]";
+        return "PostDTO [postId=" + postId + ", userId=" + userId + ", postCheckId="
+                + postCheckId + ", title=" + title + ", content=" + content + ", writeDtm="
+                + writeDtm + ", writerName=" + writerName + "]";
     }
 }

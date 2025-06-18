@@ -56,18 +56,26 @@ public class PostServiceImpl implements PostService {
         return result;
     }
 
-    public Map<String, Object> getPostDetail(Long postCheckId, String token) {
+    public PostDTO getPostDetail(Long postCheckId, String token) {
        Long userId = validateAccessToken(token);
        if(userId == -1) {
-           return createErrorResponse(INVALID_ACCESS_TOKEN_MSG);
+           return null;
        }
+       System.out.println("\n\n\n-------------------------------\n");
+       System.out.println("Post Check Id: " + postCheckId);
+       System.out.println("User Id: " + userId);
+       System.out.println("\n-------------------------------\n\n\n");
 
-        PostDTO postDTO = postRepository.findPostDetailByCheckId(postCheckId);
+       PostDTO postDTO = postRepository.findPostDetailByCheckId(postCheckId);
 
-        if (postDTO == null) {
-            return createErrorResponse("게시글을 찾을 수 없습니다.");
+        System.out.println("\n\n--- PostDTO 출력 ---\n");
+        System.out.println(postDTO);
+        System.out.println("\n--------------------\n\n");
+
+        if(postDTO == null) {
+            return null;
         }
 
-        return createSuccessResponse(postDTO);
+        return postDTO;
     }
 }

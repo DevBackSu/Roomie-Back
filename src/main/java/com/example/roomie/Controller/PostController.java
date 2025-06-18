@@ -57,15 +57,26 @@ public class PostController {
     /**
      * 게시글 조회
      */
-    @GetMapping("/detail/{postChekId}")
-    public ResponseEntity<Map<String, Object>> getPostDetail(@PathVariable Long postChekId, @RequestHeader("Authorization") String authHeader) {
+    @GetMapping("/detail/{postCheckId}")
+    public ResponseEntity<Map<String, Object>> getPostDetail(@PathVariable Long postCheckId, @RequestHeader("Authorization") String authHeader) {
         log.info("post detail 접근");
+        System.out.println("\n\n\n-------------------------------\n");
+        System.out.println(postCheckId);
+        System.out.println("\n-------------------------------\n\n\n");
         Map<String, Object> response = new HashMap<>();
         try {
-            response = postService.getPostDetail(postChekId, authHeader);
+            PostDTO postDetail = postService.getPostDetail(postCheckId, authHeader);
+
+            if(postDetail == null) {
+                response.put("success", "false");
+                response.put("message", "존재하지 않는 게시글 입니다.");
+            }
+
+            response.put("success", true);
+            response.put("postDetail", postDetail);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response.put("success", "false");
+            response.put("success", false);
             response.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
