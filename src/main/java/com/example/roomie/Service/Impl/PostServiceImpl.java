@@ -59,18 +59,12 @@ public class PostServiceImpl implements PostService {
     public PostDTO getPostDetail(Long postCheckId, String token) {
        Long userId = validateAccessToken(token);
        if(userId == -1) {
-           return null;
+           PostDTO postDTO = new PostDTO();
+           postDTO.setPostId(-1L);
+           return postDTO;
        }
-       System.out.println("\n\n\n-------------------------------\n");
-       System.out.println("Post Check Id: " + postCheckId);
-       System.out.println("User Id: " + userId);
-       System.out.println("\n-------------------------------\n\n\n");
 
        PostDTO postDTO = postRepository.findPostDetailByCheckId(postCheckId);
-
-        System.out.println("\n\n--- PostDTO 출력 ---\n");
-        System.out.println(postDTO);
-        System.out.println("\n--------------------\n\n");
 
         if(postDTO == null) {
             return null;

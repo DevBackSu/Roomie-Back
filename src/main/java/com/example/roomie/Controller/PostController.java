@@ -4,6 +4,7 @@ import com.example.roomie.DTO.PostDTO;
 import com.example.roomie.Entity.Post;
 import com.example.roomie.Service.PostService;
 import com.example.roomie.Service.UserService;
+import com.example.roomie.SwaggerForm.PostControllerDocs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/posting")
 @Slf4j
-public class PostController {
+public class PostController implements PostControllerDocs {
     private final PostService postService;
     private final UserService userService;
 
@@ -60,9 +61,6 @@ public class PostController {
     @GetMapping("/detail/{postCheckId}")
     public ResponseEntity<Map<String, Object>> getPostDetail(@PathVariable Long postCheckId, @RequestHeader("Authorization") String authHeader) {
         log.info("post detail 접근");
-        System.out.println("\n\n\n-------------------------------\n");
-        System.out.println(postCheckId);
-        System.out.println("\n-------------------------------\n\n\n");
         Map<String, Object> response = new HashMap<>();
         try {
             PostDTO postDetail = postService.getPostDetail(postCheckId, authHeader);
@@ -70,6 +68,12 @@ public class PostController {
             if(postDetail == null) {
                 response.put("success", "false");
                 response.put("message", "존재하지 않는 게시글 입니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+            else if(postDetail.getPostId() == -1L) {
+                response.put("success", "false");
+                response.put("message", "유효하지 않은 사용자 입니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
 
             response.put("success", true);
