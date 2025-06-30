@@ -88,6 +88,7 @@ public class PostController implements PostControllerDocs {
 
     /**
      * 게시글 등록
+     * 이쪽 구현 필요함~
      */
 
     /**
