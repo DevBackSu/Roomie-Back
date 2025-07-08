@@ -11,6 +11,7 @@ import lombok.*;
 @Builder // 빌더 패턴 적용
 @Table(name = "SELF")
 public class Self {
+    // 생각해보니까 self_id가 필요하지 않음. user_id가 FK면서 PK면 됨 -> 수정 필요
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "self_id")
