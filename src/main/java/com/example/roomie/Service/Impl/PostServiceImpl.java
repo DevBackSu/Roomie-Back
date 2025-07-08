@@ -1,9 +1,11 @@
 package com.example.roomie.Service.Impl;
 
 import com.example.roomie.DTO.PostDTO;
+import com.example.roomie.Entity.File;
 import com.example.roomie.Entity.Post;
 import com.example.roomie.Entity.User;
 import com.example.roomie.JWT.JwtService;
+import com.example.roomie.Repository.FileRepository;
 import com.example.roomie.Repository.PostRepository;
 import com.example.roomie.Repository.UserRepository;
 import com.example.roomie.Service.PostService;
@@ -16,11 +18,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +28,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final FileRepository fileRepository;
 
     private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token";
     private static final String USER_NOT_FOUND_MSG = "User not found with id: ";
@@ -112,23 +113,37 @@ public class PostServiceImpl implements PostService {
                 .postCheckId(randomPostCheckId)
                 .build();
 
-        // 4. 첨부파일 처리
-//        if (files != null && !files.isEmpty()) {
-//            for (MultipartFile file : files) {
-//                String savedPath = fileUploadUtil.upload(file);
-//
-//                FileEntity fileEntity = FileEntity.builder()
-//                        .filePath(savedPath)
-//                        .originalName(file.getOriginalFilename())
-//                        .post(post) // 연관관계 설정
-//                        .build();
-//
-//                post.addFile(fileEntity); // 양방향 관계 설정
-//            }
-//        }
-
-        // 5. 저장
+        // 4. 저장
         postRepository.save(post);
+
+        // 5. 첨부파일 저장
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    try {
+                        String originName = file.getOriginalFilename();
+                        String fileName = UUID.randomUUID().toString();
+                        String fileType = file.getContentType();
+
+                        String filePath = "/uploads/" + fileName;
+                        java.io.File dest = new java.io.File(filePath);
+                        file.transferTo(dest); // IOException 발생 가능
+
+                        File fileEntity = File.builder()
+                                .post(post)
+                                .filePath(filePath)
+                                .originName(originName)
+                                .fileName(fileName)
+                                .fileType(fileType)
+                                .build();
+
+                        fileRepository.save(fileEntity);
+                    } catch (IOException e) {
+                        return -1L;
+                    }
+                }
+            }
+        }
         return post.getPostCheckId(); // 또는 post.getPostCheckId() 함께 리턴 가능
     }
 }

@@ -108,6 +108,11 @@ public class PostController implements PostControllerDocs {
                 response.put("error", "사용자 인증에 실패했습니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
+            else if(postCheckId == -1L) {
+                response.put("success", "false");
+                response.put("error", "파일 저장에 실패했습니다.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
 
             response.put("success", true);
             response.put("postCheckId", postCheckId);
