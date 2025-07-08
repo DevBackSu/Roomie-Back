@@ -8,8 +8,10 @@ import com.example.roomie.SwaggerForm.PostControllerDocs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -88,8 +90,35 @@ public class PostController implements PostControllerDocs {
 
     /**
      * 게시글 등록
-     * 이쪽 구현 필요함~
      */
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> createPost(
+            @RequestPart("post") PostDTO requestDTO,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @RequestHeader("Authorization") String authHeader) {
+
+        log.info("게시글 등록 요청: {}", requestDTO.getTitle());
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Long postCheckId = postService.createPostWithFiles(requestDTO, files, authHeader);
+
+            if(postCheckId == null) {
+                response.put("success", "false");
+                response.put("error", "사용자 인증에 실패했습니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+
+            response.put("success", true);
+            response.put("postCheckId", postCheckId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            log.error("게시글 등록 중 오류 발생", e);
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
     /**
      * 게시글 수정

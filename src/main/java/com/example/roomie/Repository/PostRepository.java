@@ -21,4 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("SELECT new com.example.roomie.DTO.PostDTO(p.postId, p.user.id, p.postCheckId, p.title, p.content, p.writeDtm, p.user.nickname) " +
             "FROM Post p WHERE p.postCheckId = :postCheckId")
     PostDTO findPostDetailByCheckId(@Param("postCheckId") Long postCheckId);
+
+    boolean existsByPostCheckId(Long postCheckId);
 }

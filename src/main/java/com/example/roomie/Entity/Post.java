@@ -21,7 +21,8 @@ public class Post {
     private Long postCheckId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", updatable = false)
+//    @JoinColumn(name = "user_id", insertable = false, updatable = false) -> 이렇게 설정하면 insert도 안 되고 update도 안 됨
     @JsonIgnore
     private User user;
 
@@ -33,9 +34,5 @@ public class Post {
 
     @Column(name = "write_dtm")
     private String writeDtm;
-
-    public Long generateRandomPostCheckId() {
-        return (long) (Math.random() * 900000) + 100000; // 100000 ~ 999999 사이의 숫자
-    }
 
 }
