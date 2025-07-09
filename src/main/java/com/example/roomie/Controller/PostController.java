@@ -35,23 +35,21 @@ public class PostController implements PostControllerDocs {
                                                              @RequestParam(defaultValue = "10") int size) {
         log.info("getPostList 접근");
         Map<String, Object> response = new HashMap<>();
-
         if (page < 0 || size <= 0) {
-            response.put("success", "false");
+            response.put("success", false);
             response.put("error", "올바르지 않은 page 또는 size 값입니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         try {
             Map<String, Object> postData = postService.getPostList(page, size);
-
-            response.put("success", "true");
+            response.put("success", true);
             response.put("postData", postData);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error(e.getMessage());
-            response.put("success", "false");
+            response.put("success", false);
             response.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
@@ -68,12 +66,12 @@ public class PostController implements PostControllerDocs {
             PostDTO postDetail = postService.getPostDetail(postCheckId, authHeader);
 
             if(postDetail == null) {
-                response.put("success", "false");
+                response.put("success", false);
                 response.put("message", "존재하지 않는 게시글 입니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
             else if(postDetail.getPostId() == -1L) {
-                response.put("success", "false");
+                response.put("success", false);
                 response.put("message", "유효하지 않은 사용자 입니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
@@ -104,12 +102,12 @@ public class PostController implements PostControllerDocs {
             Long postCheckId = postService.createPostWithFiles(requestDTO, files, authHeader);
 
             if(postCheckId == null) {
-                response.put("success", "false");
+                response.put("success", false);
                 response.put("error", "사용자 인증에 실패했습니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
             else if(postCheckId == -1L) {
-                response.put("success", "false");
+                response.put("success", false);
                 response.put("error", "파일 저장에 실패했습니다.");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }
@@ -128,6 +126,39 @@ public class PostController implements PostControllerDocs {
     /**
      * 게시글 수정
      */
+//    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<Map<String, Object>> updatePost(
+//            @RequestPart("post") PostDTO requestDTO,
+//            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+//            @RequestHeader("Authorization") String authHeader) {
+//
+//        log.info("게시글 수정 요청: {}", requestDTO.getTitle());
+//        Map<String, Object> response = new HashMap<>();
+//
+//        try {
+//            Long postCheckId = postService.updatePostWithFiles(requestDTO, files, authHeader);
+//
+//            if(postCheckId == null) {
+//                response.put("success", false);
+//                response.put("error", "사용자 인증에 실패했습니다.");
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//            }
+//            else if(postCheckId == -1L) {
+//                response.put("success", false);
+//                response.put("error", "파일 저장에 실패했습니다.");
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+//            }
+//
+//            response.put("success", true);
+//            response.put("postCheckId", postCheckId);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//        } catch (Exception e) {
+//            log.error("게시글 등록 중 오류 발생", e);
+//            response.put("success", false);
+//            response.put("error", e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+//        }
+//    }
 
     /**
      * 게시글 삭제

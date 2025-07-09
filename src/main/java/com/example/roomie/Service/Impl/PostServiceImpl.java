@@ -73,14 +73,14 @@ public class PostServiceImpl implements PostService {
     }
 
     public PostDTO getPostDetail(Long postCheckId, String token) {
-       Long userId = validateAccessToken(token);
-       if(userId == -1) {
-           PostDTO postDTO = new PostDTO();
-           postDTO.setPostId(-1L);
-           return postDTO;
-       }
+        Long userId = validateAccessToken(token);
+        if(userId == -1) {
+            PostDTO postDTO = new PostDTO();
+            postDTO.setPostId(-1L);
+            return postDTO;
+        }
 
-       PostDTO postDTO = postRepository.findPostDetailByCheckId(postCheckId);
+        PostDTO postDTO = postRepository.findPostDetailByCheckId(postCheckId);
 
         if(postDTO == null) {
             return null;

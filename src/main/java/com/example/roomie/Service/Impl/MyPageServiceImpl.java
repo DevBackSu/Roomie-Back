@@ -6,6 +6,8 @@ import com.example.roomie.Entity.Characters;
 import com.example.roomie.Entity.User;
 import com.example.roomie.JWT.JwtService;
 import com.example.roomie.Repository.CharacterRepository;
+import com.example.roomie.Repository.SelfRepository;
+import com.example.roomie.Repository.UserCharacterRepository;
 import com.example.roomie.Repository.UserRepository;
 import com.example.roomie.Service.MyPageService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,8 @@ public class MyPageServiceImpl implements MyPageService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final CharacterRepository characterRepository;
+    private final UserCharacterRepository userCharacterRepository;
+    private final SelfRepository selfRepository;
 
     private Map<String, Object> createErrorResponse(String message) {
         Map<String, Object> response = new HashMap<>();
@@ -92,7 +96,7 @@ public class MyPageServiceImpl implements MyPageService {
             return null;    // access token 오류 시 발생
         }
         try {
-            List<String> result = userRepository.findUserCharacter(userId);
+            List<String> result = userCharacterRepository.findUserCharacter(userId);
 
             return result;
         } catch (Exception e) {
@@ -109,7 +113,7 @@ public class MyPageServiceImpl implements MyPageService {
             return "다시 로그인 해주세요!";
         }
         try {
-            String result = userRepository.findUserSelf(userId);
+            String result = selfRepository.findUserSelf(userId);
             return result;
         } catch (Exception e) {
             log.error(e.getMessage());
