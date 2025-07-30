@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,8 @@ public class PostController implements PostControllerDocs {
             }
             else if(postDetail.getPostId() == -1L) {
                 response.put("success", false);
-                response.put("message", "유효하지 않은 사용자 입니다.");
+                response.put("message",
+                        "유효하지 않은 사용자 입니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
 
@@ -98,7 +100,25 @@ public class PostController implements PostControllerDocs {
         log.info("게시글 등록 요청: {}", requestDTO.getTitle());
         Map<String, Object> response = new HashMap<>();
 
+        List<String> allowedExtensions = Arrays.asList("jsp", "png", "pdf", "txt");
+
         try {
+            if (files != null) {
+                for (MultipartFile file : files) {
+                    String filename = file.getOriginalFilename();
+
+                    // 확장자 체크
+                    if (filename != null) {
+                        String ext = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
+                        if (!allowedExtensions.contains(ext)) {
+                            response.put("success", false);
+                            response.put("error", filename + " 파일은 허용된 형식이 아닙니다. (jsp, png, pdf, txt만 허용)");
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                        }
+                    }
+                }
+            }
+
             Long postCheckId = postService.createPostWithFiles(requestDTO, files, authHeader);
 
             if(postCheckId == null) {

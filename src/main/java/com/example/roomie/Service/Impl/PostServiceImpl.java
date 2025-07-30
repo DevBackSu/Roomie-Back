@@ -1,5 +1,6 @@
 package com.example.roomie.Service.Impl;
 
+import com.example.roomie.DTO.FileDTO;
 import com.example.roomie.DTO.PostDTO;
 import com.example.roomie.Entity.File;
 import com.example.roomie.Entity.Post;
@@ -30,26 +31,9 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
 
-    private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token";
-    private static final String USER_NOT_FOUND_MSG = "User not found with id: ";
-
     private Long validateAccessToken(String authHeader) {
         String accessToken = jwtService.extractTokenAccessToken(authHeader);
         return jwtService.accessTokenToId(accessToken);
-    }
-
-    private Map<String, Object> createErrorResponse(String message) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", false);
-        response.put("message", message);
-        return response;
-    }
-
-    private Map<String, Object> createSuccessResponse(Object data) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("data", data);
-        return response;
     }
 
     private Long generateRandomPostCheckId() {
@@ -82,8 +66,11 @@ public class PostServiceImpl implements PostService {
 
         PostDTO postDTO = postRepository.findPostDetailByCheckId(postCheckId);
 
-        if(postDTO == null) {
-            return null;
+        if(postDTO != null) {
+            List<FileDTO> files = fileRepository.findFileDTOsByPostCheckId(postCheckId);
+            if(!files.isEmpty()) {
+                postDTO.setFiles(files);
+            }
         }
 
         return postDTO;
@@ -125,7 +112,7 @@ public class PostServiceImpl implements PostService {
                         String fileName = UUID.randomUUID().toString();
                         String fileType = file.getContentType();
 
-                        String filePath = "/uploads/" + fileName;
+                        String filePath = "C:\\private\\file\\" + fileName + "." + fileType;
                         java.io.File dest = new java.io.File(filePath);
                         file.transferTo(dest); // IOException 발생 가능
 

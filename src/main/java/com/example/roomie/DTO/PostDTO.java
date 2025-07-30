@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -17,6 +20,8 @@ public class PostDTO {
     private String content;
     private String writeDtm;
     private String writerName;
+    private List<FileDTO> files;
+
 
     // JPQL에서 사용할 생성자
     public PostDTO(Long postId, Long userId, Long postCheckId, String title, String content, String writeDtm, String writerName) {
@@ -32,6 +37,7 @@ public class PostDTO {
     public String toString() {
         return "PostDTO [postId=" + postId + ", userId=" + userId + ", postCheckId="
                 + postCheckId + ", title=" + title + ", content=" + content + ", writeDtm="
-                + writeDtm + ", writerName=" + writerName + "]";
+                + writeDtm + ", writerName=" + writerName + "]"
+                + "\n\tfiles=" + files;
     }
 }
