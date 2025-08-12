@@ -64,6 +64,12 @@ public class PostController implements PostControllerDocs {
         log.info("post detail 접근");
         Map<String, Object> response = new HashMap<>();
         try {
+            /**
+             * TODO 게시글에 접근할 때마다 조회수를 +1하는 부분을 추가해야 함
+             */
+            /**
+             *
+             */
             PostDTO postDetail = postService.getPostDetail(postCheckId, authHeader);
 
             if(postDetail == null) {
@@ -151,6 +157,7 @@ public class PostController implements PostControllerDocs {
 //            @RequestPart("post") PostDTO requestDTO,
 //            @RequestPart(value = "files", required = false) List<MultipartFile> files,
 //            @RequestHeader("Authorization") String authHeader) {
+//    게시글 작성자와 동일한 id여야 함
 //
 //        log.info("게시글 수정 요청: {}", requestDTO.getTitle());
 //        Map<String, Object> response = new HashMap<>();
@@ -183,4 +190,8 @@ public class PostController implements PostControllerDocs {
     /**
      * 게시글 삭제
      */
+//    @GetMapping("/delete/{postCheckId}")
+//    public ResponseEntity<Map<String, Object>> getPostDetail(@PathVariable Long postCheckId, @RequestHeader("Authorization") String authHeader) {
+//        // 게시글을 작성한 id와 동일해야 함
+//    }
 }

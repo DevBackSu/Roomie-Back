@@ -33,4 +33,9 @@ public class File {
 
     @Column(name = "file_type")
     private String fileType;
+
+    public String toString() {
+        return "\n"+"fileId : " + fileId + "\nfilePath : " + filePath + "\noriginName : " + originName
+                + "\npost : " + post + "\nfileName : " + fileName + "\nfileType : " + fileType;
+    }
 }

@@ -76,7 +76,7 @@ public class PostServiceImpl implements PostService {
         return postDTO;
     }
 
-    // 여기 정리하기!!
+    // 여기 정리하기!! -> 왜 파일 첨부 자체가 되지 않는가.. 저번에 테스트할 때는 됐던 것 같은데???
     public Long createPostWithFiles(PostDTO requestDTO, List<MultipartFile> files, String authHeader) {
         // 1. 사용자 인증
         Long userId = validateAccessToken(authHeader);
@@ -100,21 +100,40 @@ public class PostServiceImpl implements PostService {
                 .postCheckId(randomPostCheckId)
                 .build();
 
+        System.out.println("\n\n\n-------------------------------\n");
+        System.out.println(post);
+        System.out.println("\n-------------------------------\n\n\n");
+
         // 4. 저장
         postRepository.save(post);
 
+        System.out.println("\n\n\n-------------------------------\n");
+        System.out.println("게시글 저장 완료 / 파일 저장 진행");
+        System.out.println("\n-------------------------------\n\n\n");
+
         // 5. 첨부파일 저장
         if (files != null && !files.isEmpty()) {
+            System.out.println("\n\n\n-------------------------------\n");
+            System.out.println(files);
+            System.out.println("\n-------------------------------\n\n\n");
             for (MultipartFile file : files) {
+                System.out.println("파일 이름: " + file.getOriginalFilename());
+                System.out.println("파일 크기: " + file.getSize());
+                System.out.println("파일 isEmpty(): " + file.isEmpty());
+                System.out.println("파일 content type : " + file.getContentType());
                 if (!file.isEmpty()) {
                     try {
                         String originName = file.getOriginalFilename();
                         String fileName = UUID.randomUUID().toString();
                         String fileType = file.getContentType();
+                        String extension = originName.substring(originName.lastIndexOf(".") + 1);
 
-                        String filePath = "C:\\private\\file\\" + fileName + "." + fileType;
+                        System.out.println("\n\n\n-------------------------------\n");
+                        System.out.println("file type : " + fileType);
+                        System.out.println("\n-------------------------------\n\n\n");
+                        String filePath = "C:\\private\\file\\" + fileName + "." + extension;
                         java.io.File dest = new java.io.File(filePath);
-                        file.transferTo(dest); // IOException 발생 가능
+                        file.transferTo(dest); // IOException 발생 가능 -> 여기가 문젠가?
 
                         File fileEntity = File.builder()
                                 .post(post)
@@ -124,6 +143,9 @@ public class PostServiceImpl implements PostService {
                                 .fileType(fileType)
                                 .build();
 
+                        System.out.println("\n\n\n-------------------------------\n");
+                        System.out.println(fileEntity);
+                        System.out.println("\n-------------------------------\n\n\n");
                         fileRepository.save(fileEntity);
                     } catch (IOException e) {
                         return -1L;
