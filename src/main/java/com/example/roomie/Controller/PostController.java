@@ -67,9 +67,6 @@ public class PostController implements PostControllerDocs {
             /**
              * TODO 게시글에 접근할 때마다 조회수를 +1하는 부분을 추가해야 함
              */
-            /**
-             *
-             */
             PostDTO postDetail = postService.getPostDetail(postCheckId, authHeader);
 
             if(postDetail == null) {
@@ -84,7 +81,11 @@ public class PostController implements PostControllerDocs {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
 
+            // 사용자와 작성자가 동일한지 확인
+            Boolean equalUser = postService.getEqualUser(postDetail.getPostId(),authHeader);
+
             response.put("success", true);
+            response.put("equalUser", equalUser);
             response.put("postDetail", postDetail);
             return ResponseEntity.ok(response);
         } catch (Exception e) {

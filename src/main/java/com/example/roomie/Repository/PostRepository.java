@@ -23,4 +23,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     PostDTO findPostDetailByCheckId(@Param("postCheckId") Long postCheckId);
 
     boolean existsByPostCheckId(Long postCheckId);
+
+    boolean existsByPostIdAndUser_Id(Long postId, Long userId);
 }

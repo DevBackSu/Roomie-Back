@@ -14,4 +14,6 @@ public interface PostService {
     PostDTO getPostDetail(Long postCheckId, String token);
 
     Long createPostWithFiles(PostDTO requestDTO, List<MultipartFile> files, String authHeader);
+
+    Boolean getEqualUser(Long postId, String authHeader);
 }

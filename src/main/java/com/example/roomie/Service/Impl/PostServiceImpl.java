@@ -44,6 +44,21 @@ public class PostServiceImpl implements PostService {
         return randomId;
     }
 
+    public Boolean getEqualUser(Long postId, String authHeader) {
+        Long userId = validateAccessToken(authHeader);
+        System.out.println("\n\n\n-------------------------------\n");
+        System.out.println(userId);
+        System.out.println("\n-------------------------------\n\n\n");
+
+        Boolean equalUser = postRepository.existsByPostIdAndUser_Id(postId, userId);
+
+        System.out.println("\n\n\n-------------------------------\n");
+        System.out.println(equalUser);
+        System.out.println("\n-------------------------------\n\n\n");
+
+        return equalUser;
+    }
+
     public Map<String, Object> getPostList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("postId").descending());
 
